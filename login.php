@@ -32,7 +32,10 @@
                 </div>
                 <div class="row g-3">
                     <div class="col form-btn">
-                        <button type="submit">Login</button>
+                        <button type="submit">Customer Login</button>
+                    </div>
+                    <div class="col form-btn">
+                        <button type="submit">Admin Login</button>
                     </div>
                 </div>
             </form>

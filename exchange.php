@@ -1,7 +1,7 @@
 <?php
     require_once("includes/db_conn.php");
-    $exchange = "SELECT * FROM currencies";
-    $exchange_result = $conn->query($exchange);
+    $rates = "SELECT * FROM currencies ";
+    $rates_result = $conn->query($rates);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,24 +32,38 @@
 
         <div class="container">
             <h2>Currency Exchange Rates</h2>
-            <table class="table table-striped table-hover table-bordered">
-                <tr>
+            <table class="table table-striped">
+                <thead class="table-dark">
                     <th>Currency</th>
                     <th>Rate</th>
                     <th>Highest in last year</th>
                     <th>Lowest in last year</th>
-                </tr>
+                </thead>
                 <?php
-                    while ($obj = $exchange_result->fetch_object()) {
+                    while ($obj = $rates_result->fetch_object()) {
                         echo "<tr>";
                         echo "<th>{$obj->currency_name}</th>";
-                        echo "<th>{$obj->currency_name}</th>"; // Exchange Rate 
-                        echo "<th>{$obj->currency_name}</th>"; // Highest rate
-                        echo "<th>{$obj->currency_name}</th>";  // Lowest Rate
+                        echo "<th>{$obj->exchange_rate}</th>"; 
+                        echo "<th>{$obj->highest_rate}</th>"; 
+                        echo "<th>{$obj->lowest_rate}</th>"; 
                         echo "</tr>";
                     }
                 ?>
             </table>
+            <div class="container-rate-update">
+                <h3>Update Exchange Rates</h3>
+                <?php
+                    echo "<form method=\"POST\">";
+                        echo "<label for=\"currencies\">Currency:</label>";
+                        echo "<input name=\"currencies\" id=\"currencies\">";
+                    
+                        while ($drop = $rates_result->fetch_object()) {
+                            echo "<option value=\"{$drop->currency_id}\">{$drop->currency_name}</option>";
+                        }
+                        echo "</select>";
+                    echo "</form>";
+                ?>
+            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
