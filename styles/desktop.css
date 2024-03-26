@@ -1,0 +1,92 @@
+* {
+    font-family: sans-serif;
+}
+body {
+    background-color: black;
+}
+ul {
+    list-style: none;
+}
+
+/* Header and Navigation */
+header {
+    width: 100%;
+    background-color: #00FF96;
+}
+.header-logo {
+    text-align: center;
+    padding: 10px;
+}
+.header-logo h1 {
+    font-size: 5em;
+    margin: 0;
+}
+.header-navbar {
+    background-color: rgb(147, 147, 147);
+}
+.header-navbar-list {
+    padding: 0;
+    display: flex;
+}
+.header-navbar-list-item {
+    padding: 12px;
+    transition: 0.3s;
+}
+.item-active {
+    background-color: rgb(255, 115, 64);
+}
+.header-navbar-list-item a {
+    text-decoration: none;
+    color: black;
+}
+.header-navbar-list-item:hover {
+    background-color: #00b168;
+}
+
+/* Containers */
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px 40px 10px 40px;
+    background-color: rgb(112, 112, 112);
+    border-radius: 5px;
+}
+.container h2 {
+    color: white;
+}
+
+/* Tabs */
+.transfer-tabs {
+    overflow: hidden;
+    background-color: #00FF96;
+    display: flex;
+    justify-content: space-around;
+}
+.transfer-tab-links {
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    padding: 14px;
+    transition: 0.3s;
+}
+.transfer-tab-links:hover {
+    background-color: #00b168;
+}
+.transfer-tabs button.active {
+    background-color: rgb(255, 115, 64);
+}
+.transfer-tab-content {
+    display: none;
+    padding: 6px 12px;
+}
+
+/* Forms */
+.form-group {
+    margin: 15px 0px;
+}
+
+/* Login */
+
+/* Register */
+
+/* Excahnge Rate Table */

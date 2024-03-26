@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link rel="stylesheet" href  ="styles/main.css" />
+        <link rel="stylesheet" href  ="styles/desktop.css" />
         <script src="https://kit.fontawesome.com/683ed5d49e.js" crossorigin="anonymous"></script>
         <title>Login</title>
     </head>
@@ -15,33 +15,18 @@
                 <p class="header-logo-text">Currency Transfer Application</p>
             </div>
         </header>
+
         <div class="container">
-            <h2>Login</h2>
-            <form method="POST" action="">
-                <div class="row g-3">
-                    <div class="col">
-                        <label for="username">Username:</label>
-                        <input type="text" class="form-control" placeholder="email@example.com" aria-label="Username" name="username" required>
-                    </div>
+            <h2 class="text-center">Login</h2>
+            <form action="login.php" method="post">
+                <div class="form-group">
+                    <input type="text" placeholder="Username" name="firstname" class="form-control">
                 </div>
-                <div class="row g-3">
-                    <div class="col">
-                        <label for="inputPassword">Password:</label>
-                        <input type="password" class="form-control" placeholder="********" aria-label="Password" name="inputPassword" required>
-                    </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Passsword" name="inputPassword" class="form-control">
                 </div>
-                <div class="row g-3">
-                    <div class="col form-btn">
-                        <button type="submit">Customer Login</button>
-                    </div>
-                    <div class="col form-btn">
-                        <button type="submit">Admin Login</button>
-                    </div>
-                </div>
-                <div class="row g-3">
-                    <div class="col form-btn">
-                        <a href="register.php">Dont Have an Account? SignUp</a>
-                    </div>
+                <div class="form-group">
+                    <input type="submit" value="Login" name="submit" class="btn btn-warning">
                 </div>
             </form>
         </div>
