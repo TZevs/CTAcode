@@ -38,6 +38,11 @@
                         <button type="submit">Admin Login</button>
                     </div>
                 </div>
+                <div class="row g-3">
+                    <div class="col form-btn">
+                        <a href="register.php">Dont Have an Account? SignUp</a>
+                    </div>
+                </div>
             </form>
         </div>
 

@@ -50,20 +50,6 @@
                     }
                 ?>
             </table>
-            <div class="container-rate-update">
-                <h3>Update Exchange Rates</h3>
-                <?php
-                    echo "<form method=\"POST\">";
-                        echo "<label for=\"currencies\">Currency:</label>";
-                        echo "<input name=\"currencies\" id=\"currencies\">";
-                    
-                        while ($drop = $rates_result->fetch_object()) {
-                            echo "<option value=\"{$drop->currency_id}\">{$drop->currency_name}</option>";
-                        }
-                        echo "</select>";
-                    echo "</form>";
-                ?>
-            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
