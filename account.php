@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link rel="stylesheet" href  ="styles/desktop.css" />
+        <link rel="stylesheet" href  ="styles/main.css" />
         <script src="https://kit.fontawesome.com/683ed5d49e.js" crossorigin="anonymous"></script>
         <title>Account</title>
     </head>
@@ -27,24 +27,32 @@
 
         <div class="container">
             <h2>Account Details</h2>
+            <?php
+                require_once("includes/db_conn.php");
+                $customer = "SELECT * FROM customeraccounts";
+                $customer_results = $conn->query($customer);
+
+                $admin = "SELECT * FROM adminaccounts";
+                $admin_results = $conn->query($admin);
+            ?>
             <form method="POST" action="">
-                <div class="register-form-group">
+                <div class="form-group">
                     <label for="firstname">First Name:</label>
                     <input type="text" class="register-form-input" id="firstname" name="firstname" readonly placeholder="">
                 </div>
-                <div class="register-form-group">
+                <div class="form-group">
                     <label for="lastname">Last Name:</label>
                     <input type="text" class="register-form-input" id="lastname" name="lastname" readonly placeholder="">
                 </div>
-                <div class="register-form-group">
+                <div class="form-group">
                     <label for="dob">Date of Birth:</label>
                     <input type="text" class="register-form-input" id="dob" name="dob" readonly placeholder="">
                 </div>
-                <div class="register-form-group">
+                <div class="form-group">
                     <label for="email">Email Address:</label>
                     <input type="text" class="register-form-input" id="email" name="email" placeholder="">
                 </div>
-                <div class="register-form-group">
+                <div class="form-group">
                     <label for="inputPassword">Password:</label>
                     <input type="password" class="register-form-input" id="inputPassword" name="inputPassword">
                     <p>Must be 8-20 characters long.</p>

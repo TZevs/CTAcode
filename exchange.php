@@ -1,15 +1,10 @@
-<?php
-    require_once("includes/db_conn.php");
-    $rates = "SELECT * FROM currencies ";
-    $rates_result = $conn->query($rates);
-?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link rel="stylesheet" href  ="styles/desktop.css" />
+        <link rel="stylesheet" href  ="styles/main.css" />
         <script src="https://kit.fontawesome.com/683ed5d49e.js" crossorigin="anonymous"></script>
         <title>Account</title>
     </head>
@@ -40,6 +35,10 @@
                     <th>Lowest in last year</th>
                 </thead>
                 <?php
+                    require_once("includes/db_conn.php");
+                    $rates = "SELECT * FROM currencies";
+                    $rates_result = $conn->query($rates);
+
                     while ($obj = $rates_result->fetch_object()) {
                         echo "<tr>";
                         echo "<th>{$obj->currency_name}</th>";
@@ -50,6 +49,43 @@
                     }
                 ?>
             </table>
+            <div class="container-sm">
+                <h3>Update Currency Exchange Rates:</h3>
+                <form action="" method="POST">
+                    <div class="form-group">
+                        <label for="selectCurrency">Select Currency:</label>
+                        <select name="selectCurrency" id="currencies">
+                            <option selected>...</option>
+                            <?php
+                                require_once("includes/db_conn.php");
+                                $updateRates = "SELECT currency_name, shorthand FROM currencies";
+                                $update_results = $conn->query($updateRates);
+
+                                while ($obj = $update_results->fetch_object()) {
+                                    echo "<option value='{$obj->currency_id}'>{$obj->shorthand} : {$obj->currency_name}</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newRate">New Exchange Rate:</label>
+                        <input type="text" name="newRate" class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col">
+                            <label for="highRate">New Highest Rate (last 52wks):</label>
+                            <input type="text" name="highRate" class="form-control">
+                        </div>
+                        <div class="form-group col">
+                            <label for="lowRate">New Lowest Rate (last 52wks):</label>
+                            <input type="text" name="lowRate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Update" name="submit" class="btn btn-warning">
+                    </div>
+                </form>
+            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
