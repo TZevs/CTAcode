@@ -1,3 +1,14 @@
+<?php
+    /*
+    session_start();
+
+    if(!isset($_SESSION['userEmail'])) {
+        header("Location: login.php");
+        exit();
+    }
+    $userEmail = $_SESSION['userEmail'];
+    */
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -27,42 +38,32 @@
 
         <div class="container">
             <h2>Account Details</h2>
-            <?php
-                require_once("includes/db_conn.php");
-                $customer = "SELECT * FROM customeraccounts";
-                $customer_results = $conn->query($customer);
+            
+            <div>
+                <h3>First Name: <?php echo "{$obj->first_name}"; ?></h3>
+                <h3>Middle Name: <?php echo "{$obj->middle_name}"; ?></h3>
+                <h3>Last Name: <?php echo "{$obj->last_name}"; ?></h3>
+                <h3>Date of Birth: <?php echo "{$obj->dob}"; ?></h3>
+            </div>
 
-                $admin = "SELECT * FROM adminaccounts";
-                $admin_results = $conn->query($admin);
-            ?>
             <form method="POST" action="">
                 <div class="form-group">
-                    <label for="firstname">First Name:</label>
-                    <input type="text" class="register-form-input" id="firstname" name="firstname" readonly placeholder="">
-                </div>
-                <div class="form-group">
-                    <label for="lastname">Last Name:</label>
-                    <input type="text" class="register-form-input" id="lastname" name="lastname" readonly placeholder="">
-                </div>
-                <div class="form-group">
-                    <label for="dob">Date of Birth:</label>
-                    <input type="text" class="register-form-input" id="dob" name="dob" readonly placeholder="">
-                </div>
-                <div class="form-group">
                     <label for="email">Email Address:</label>
-                    <input type="text" class="register-form-input" id="email" name="email" placeholder="">
+                    <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo $obj->email_address ?>">
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword">Password:</label>
-                    <input type="password" class="register-form-input" id="inputPassword" name="inputPassword">
-                    <p>Must be 8-20 characters long.</p>
+                    <label for="input_password">Change Password:</label>
+                    <input type="password" class="form-control" id="input_password" name="input_password" placeholder="********">
                 </div>
                 <div class="row g-3">
                     <div class="col form-btn">
-                        <button type="submit">Update</button>
+                        <input type="submit" value="Update" name="update" class="btn btn-warning">
                     </div>
                 </div>
             </form>
+            <div>
+                <h4 class="btn btn-primary"><a href="includes/logout.php" class="links">Logout</a></h4>
+            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

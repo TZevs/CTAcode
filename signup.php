@@ -20,4 +20,16 @@
     } else {
         die("Something went wrong");
     }
+
+    $exsitingEmails = "SELECT * FROM customeraccounts WHERE email_Address = '$email'";
+                    $emailResults = $conn->query($exsitingEmails);
+                    if ($emailResults === 1) {
+                        array_push($errors, "Email already has an account.");
+                    
+        }
+
+        define("DB_SERVER", "127.0.0.1");
+    define("DB_USERNAME", "root");
+    define("DB_PASSWORD", "");
+    define("DB_NAME", "cta_schema");
 ?>

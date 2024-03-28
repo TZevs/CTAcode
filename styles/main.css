@@ -47,35 +47,10 @@ header {
 .container {
     max-width: 600px;
     margin: 40px auto;
-    padding: 20px 40px 10px 40px;
+    padding: 20px 20px 10px 20px;
     background-color: rgb(112, 112, 112);
     border-radius: 5px;
     color: white;
-}
-
-/* Tabs */
-.transfer-tabs {
-    overflow: hidden;
-    background-color: #00FF96;
-    display: flex;
-    justify-content: space-around;
-}
-.transfer-tab-links {
-    background-color: inherit;
-    border: none;
-    cursor: pointer;
-    padding: 14px;
-    transition: 0.3s;
-}
-.transfer-tab-links:hover {
-    background-color: #00b168;
-}
-.transfer-tabs button.active {
-    background-color: rgb(255, 115, 64);
-}
-.transfer-tab-content {
-    display: none;
-    padding: 6px 12px;
 }
 
 /* Forms */
@@ -83,8 +58,40 @@ header {
     margin: 15px 0px;
 }
 
-/* Login */
-
-/* Register */
-
-/* Excahnge Rate Table */
+/* Tabs */
+.tabs {
+    overflow: hidden;
+    background-color: rgb(56, 56, 56);
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.tabs button {
+    background-color: #00FF96;
+    border-radius: 5px;
+    border: none;
+    padding: 10px 50px;
+}
+.tabs button:hover {
+    background-color: #00b168;
+    color: white; /* Check this actually changes the color. */
+}
+.tabs button.active {
+    background-color: rgb(255, 115, 64);
+}
+.tabcontent {
+    display: none;
+}
+.tabcontent h2 {
+    display: inline-block;
+}
+.close {
+    cursor: pointer;
+    font-size: 28px;
+    float: right;
+}
+.links {
+    color: white;
+    text-decoration: none;
+}

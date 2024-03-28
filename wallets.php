@@ -1,3 +1,14 @@
+<?php
+    /*
+    session_start();
+
+    if(!isset($_SESSION['userEmail'])) {
+        header("Location: login.php");
+        exit();
+    }
+    $userEmail = $_SESSION['userEmail'];
+    */
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -26,10 +37,36 @@
 
         <div class="container">
             <h4>Main Wallet</h4>
+            <?php /*
+                $wallet_info = "SELECT * FROM cuurencywallets WHERE customer_id = '$userID'";
+                $info_results = $conn->query($wallet_info);
+
+                echo "<div class='card wb-75 mb-3'>";
+                    echo "<div class='card-body'>";
+                        echo "<h5 class='card-title'>Currency: {$obj->currency}</h5>";
+                        echo "<p class='card-text'>Balance: {$obj->amount}</p>";
+                    echo "</div>";
+                echo "</div>";
+            */
+            ?>
 
             <h4>Currency Wallets</h4>
+                <div class='card wb-75 mb-3'>
+                    <div class='card-body'>
+                        <h5 class='card-title'>Currency: {$obj->currency_sign} - {$obj->currency_name}</h5>
+                        <p class='card-text'>Balance: {$obj->currency_sign}</p>
+                        <a class='btn btn-info' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>
+                            Transactions
+                        </a>
+                        <div class='collapse' id='hiddenTransactions'>
+                            <div class="card card-body">
+                                <h6>Transactions for this wallet</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <h4>Add Wallet</h4>
+            <h5>Add Wallet</h5>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

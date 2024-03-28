@@ -1,12 +1,12 @@
 <?php 
-    define("DB_SERVER", "127.0.0.1");
-    define("DB_USERNAME", "root");
-    define("DB_PASSWORD", "");
-    define("DB_NAME", "cta_schema");
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $database = "cta_schema";
 
-    $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $conn = mysqli_connect($servername, $username, $password, $database);
 
-    if($conn === false) {
-        die("Error: Could not connect. " . $conn->connect_error);
+    if(!$conn) {
+        die("Error: Connection Failed. " . mysqli_connect_error());
     }
 ?>

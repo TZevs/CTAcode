@@ -14,6 +14,13 @@
                 <h1 class="header-logo-text">C.T.A</h1>
                 <p class="header-logo-text">Currency Transfer Application</p>
             </div>
+            <nav class="header-navbar">
+                <ul class="header-navbar-list">
+                    <li class="header-navbar-list-item"><a href="index.php">Home</a></li>
+                    <li class="header-navbar-list-item item-active"><a href="register.php">Register</a></li>
+                    <li class="header-navbar-list-item"><a href="login.php">Login</a></li>
+                </ul>
+            </nav>
         </header>
 
         <div class="container">
@@ -44,25 +51,18 @@
                     }
                     if ($password!==$confirmPassword) {
                         array_push($errors, "Passwords do not match.");
-                    }
-                    // Test to see if the error message will appear for an account already made. 
-                    $exsitingEmails = "SELECT * FROM customeraccounts WHERE email_Address = '$email'";
-                    $duplicate = mysql_num_rows($exsitingEmails);
-                    if ($duplicate > 0) {
-                        array_push($errors, "Email already has an account.");
-                    }
+                    }                    
 
                     if (count($errors)>0) {
                         foreach ($errors as $error) {
                             echo "<div class='alert alert-danger'>$error</div>";
                         }
                     } else {
-                        $sql = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$dob','$hashed_password')";
-
+                        $sql = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$hashed_password','$dob')";
                         if ($conn->query($sql) === TRUE) {
                             echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
                         } else {
-                            die("Something went wrong.");
+                            die("Something went wrong");
                         }
                     }
                 }
@@ -78,7 +78,6 @@
                     <input type="text" placeholder="Last Name *" name="lastname" class="form-control">
                 </div>
                 <div class="form-group">
-                    <!-- Code worked with input type text, need to test email. -->
                     <input type="email" placeholder="Email Address *" name="email" class="form-control">
                 </div>
                 <div class="form-group">

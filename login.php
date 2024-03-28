@@ -14,52 +14,56 @@
                 <h1 class="header-logo-text">C.T.A</h1>
                 <p class="header-logo-text">Currency Transfer Application</p>
             </div>
+            <nav class="header-navbar">
+                <ul class="header-navbar-list">
+                    <li class="header-navbar-list-item"><a href="index.php">Home</a></li>
+                    <li class="header-navbar-list-item"><a href="register.php">Register</a></li>
+                    <li class="header-navbar-list-item item-active"><a href="login.php">Login</a></li>
+                </ul>
+            </nav>
         </header>
 
         <div class="container">
             <h2 class="text-center">Login</h2>
             <?php 
+                session_start();
+
                 require_once("includes/db_conn.php");
 
-                if (isset($_POST["login"])) {
-                    $userEmail = $_POST["email"];
-                    $userPassword = $_POST["password"];
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $userEmail = trim($_POST['email']);
+                    $userPassword = $_POST['input_password'];
 
-                    $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND 'password' = '$userPassword'";
+                    $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND password = '$userPassword'";
+                    $result = $conn->query($sql);
 
                     $errors = array();
 
-                    if (empty($userEmail) OR empty($password)) {
+                    if (empty($userEmail) OR empty($userPassword)) {
                         array_push($errors, "Please enter your email and password.");
                     }
-
                     if (count($errors)>0) {
                         foreach ($errors as $error) {
                             echo "<div class='alert alert-danger'>$error</div>";
                         }
                     }
-                    
-                } else {
-                    if (isset($_POST["adminlogin"])) {
-                        $adminEmail = $_POST["email"];
-                        $adminPassword = $_POST["password"];
 
-                        $sql = "SELECT * FROM adminaccounts WHERE email_address = '$adminEmail' AND 'password' = '$adminPassword'";
-
-                        $errors = array();
-
-                        if (empty($userEmail) OR empty($password)) {
-                            array_push($errors, "Please enter your email and password.");
-                        }
+                    if (mysqli_num_rows($result) == 1) {
+                        $_SESSION['userEmail'] = $userPassword;
+                        header("Location: wallets.php");
+                        exit();
+                    } else {
+                        echo "<div class='alert alert-danger'>Sorry, this login does not match an account. Please try again.</div>";
                     }
+                    mysqli_close($conn);
                 }
             ?>
             <form action="login.php" method="POST">
                 <div class="form-group">
-                    <input type="text" placeholder="Enter Email" name="email" class="form-control">
+                    <input type="email" placeholder="Enter Email" name="email" class="form-control">
                 </div>
                 <div class="form-group mb-3">
-                    <input type="password" placeholder="Passsword" name="inputPassword" class="form-control">
+                    <input type="password" placeholder="Passsword" name="input_password" class="form-control">
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Login" name="login" class="btn btn-primary">
