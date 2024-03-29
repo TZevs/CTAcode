@@ -49,12 +49,12 @@
                     }
                 ?>
             </table>
-            <div class="container-sm">
+            <div class="container-exchange-updates">
                 <h3>Update Currency Exchange Rates:</h3>
                 <form action="" method="POST">
                     <div class="form-group">
                         <label for="selectCurrency">Select Currency:</label>
-                        <select name="selectCurrency" id="currencies">
+                        <select name="selectCurrency" id="selectCurrency">
                             <option selected>...</option>
                             <?php
                                 require_once("includes/db_conn.php");
@@ -69,16 +69,16 @@
                     </div>
                     <div class="form-group">
                         <label for="newRate">New Exchange Rate:</label>
-                        <input type="text" name="newRate" class="form-control">
+                        <input type="text" name="newRate" id="newRate" class="form-control">
                     </div>
                     <div class="row">
                         <div class="form-group col">
                             <label for="highRate">New Highest Rate (last 52wks):</label>
-                            <input type="text" name="highRate" class="form-control">
+                            <input type="text" name="highRate" id="highRate" class="form-control">
                         </div>
                         <div class="form-group col">
                             <label for="lowRate">New Lowest Rate (last 52wks):</label>
-                            <input type="text" name="lowRate" class="form-control">
+                            <input type="text" name="lowRate" id="lowRate" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">

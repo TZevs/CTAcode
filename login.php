@@ -34,14 +34,22 @@
                     $userEmail = trim($_POST['email']);
                     $userPassword = $_POST['input_password'];
 
+                    // Add and AND suspended = false - After its working
                     $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND password = '$userPassword'";
                     $result = $conn->query($sql);
+                    $result_row = $result->fetch_assoc(); // Fetches associated record. Maybe ?
 
                     $errors = array();
 
                     if (empty($userEmail) OR empty($userPassword)) {
                         array_push($errors, "Please enter your email and password.");
                     }
+
+                    $verify = password_verify($userPassword, $result_row['password']);
+                    if ($verify === False) {
+                        array_push($errors, "Incorrect Password.");
+                    }
+
                     if (count($errors)>0) {
                         foreach ($errors as $error) {
                             echo "<div class='alert alert-danger'>$error</div>";

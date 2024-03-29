@@ -65,8 +65,29 @@
                         </div>
                     </div>
                 </div>
-
             <h5>Add Wallet</h5>
+                <div class="add-wallet">
+                    <form action="" method="POST">
+                        <div class="form-group">
+                            <label for="selectCurrency">Select Currency:</label>
+                                <select name="selectCurrency" id="selectCurrency">
+                                    <option selected>...</option>
+                                    <?php
+                                        require_once("includes/db_conn.php");
+                                        $walletCurrency = "SELECT currency_name, shorthand FROM currencies";
+                                        $wallet_results = $conn->query($updateRates);
+
+                                        while ($obj = $wallet_results->fetch_object()) {
+                                            echo "<option value='{$obj->currency_id}'>{$obj->shorthand} : {$obj->currency_name}</option>";
+                                        }
+                                    ?>
+                                </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="+" name="submit" class="btn btn-warning">
+                        </div>
+                    </form>
+                </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

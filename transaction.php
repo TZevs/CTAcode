@@ -70,7 +70,7 @@
                 <span onclick="this.parentElement.style.display = 'none'" class="close">x</span>
                 <form action="" method="POST">
                     <div class="form-group">
-
+                        
                     </div>
                 </form>
             </div>

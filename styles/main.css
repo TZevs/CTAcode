@@ -45,12 +45,13 @@ header {
 
 /* Containers */
 .container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 40px auto;
-    padding: 20px 20px 10px 20px;
+    padding: 20px;
     background-color: rgb(112, 112, 112);
     border-radius: 5px;
     color: white;
+    width: 600px;
 }
 
 /* Forms */
@@ -95,3 +96,4 @@ header {
     color: white;
     text-decoration: none;
 }
+
