@@ -34,34 +34,27 @@
                     $userEmail = trim($_POST['email']);
                     $userPassword = $_POST['input_password'];
 
-                    // Add and AND suspended = false - After its working
-                    $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND password = '$userPassword'";
+                    $hashed_password = hash('sha256', $userPassword);
+
+                    $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND 'password' = '$hashed_password'";
                     $result = $conn->query($sql);
-                    $result_row = $result->fetch_assoc(); // Fetches associated record. Maybe ?
-
-                    $errors = array();
-
+                    
                     if (empty($userEmail) OR empty($userPassword)) {
-                        array_push($errors, "Please enter your email and password.");
-                    }
-
-                    $verify = password_verify($userPassword, $result_row['password']);
-                    if ($verify === False) {
-                        array_push($errors, "Incorrect Password.");
-                    }
-
-                    if (count($errors)>0) {
-                        foreach ($errors as $error) {
-                            echo "<div class='alert alert-danger'>$error</div>";
-                        }
+                        echo "<div class='alert alert-danger'>Please enter your email and password.</div>";
                     }
 
                     if (mysqli_num_rows($result) == 1) {
+                        $user = mysqli_fetch_assoc($result);
                         $_SESSION['userEmail'] = $userPassword;
-                        header("Location: wallets.php");
-                        exit();
+
+                        if ($user['suspended'] === 'False') {
+                            header("Location: wallets.php");
+                            exit();
+                        } else {
+                            echo "<div class='alert alert-danger'>Sorry, this account has been suspended.</div>";
+                        }
                     } else {
-                        echo "<div class='alert alert-danger'>Sorry, this login does not match an account. Please try again.</div>";
+                        echo "<div class='alert alert-danger'>Sorry, this login does not match an account. <a href='login.php'>Please try again.</a></div>";
                     }
                     mysqli_close($conn);
                 }

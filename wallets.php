@@ -1,5 +1,4 @@
 <?php
-    /*
     session_start();
 
     if(!isset($_SESSION['userEmail'])) {
@@ -7,7 +6,18 @@
         exit();
     }
     $userEmail = $_SESSION['userEmail'];
+
+    //require_once("includes/db_conn.php");
+    /*
+    $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
+    $result = $conn->query($customer);
+    $customer = mysqli_fetch_assoc($result);
+    $id = $customer['customer_ID'];
+
+    $wallet = "SELECT * FROM currencywallets WHERE customer_id = '$id'";
+    $wallet_results = $conn->query($wallet);
     */
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,9 +48,6 @@
         <div class="container">
             <h4>Main Wallet</h4>
             <?php /*
-                $wallet_info = "SELECT * FROM cuurencywallets WHERE customer_id = '$userID'";
-                $info_results = $conn->query($wallet_info);
-
                 echo "<div class='card wb-75 mb-3'>";
                     echo "<div class='card-body'>";
                         echo "<h5 class='card-title'>Currency: {$obj->currency}</h5>";
