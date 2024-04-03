@@ -34,35 +34,44 @@
             <div id="wallet-wallet" class="tabcontent">
                 <h2>Wallet To Wallet</h2>
                 <span onclick="this.parentElement.style.display = 'none'" class="close">x</span>
-                <form action="includes/calculate.php" method="POST">
-                    <?php
-                        require_once("includes/db_conn.php");
+                    <div class="form-group">
+                        <label for="fromCurrency">From:</label>
+                        <select name="fromCurrency" id="fromCurrency">
+                            <option selected>...</option>
+                            <?php
+                                require_once("includes/db_conn.php");
+                                $from_convert = "SELECT * FROM currencies";
+                                $from_results = $conn->query($convert_rates);
 
-                        echo "<div class='form-group'>";
-                        echo "<label for='walletFrom'>Wallet Sender:</label>";
-                        echo "<select name='walletFrom' id='walletfrom'>";
-                            echo "<option selected>From</option>";
-                            /*
-                            while ($obj = $wallets->fetch_object()) {
-                                echo "<option value='{$obj->wallet}'></option>";
-                            }
-                            */
-                            echo "</select>";
-                        echo "</div>";
+                                while ($obj = $from_results->fetch_object()) {
+                                    echo "<option value='{$obj->currency_id}'>{$obj->shorthand}</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="toCurrency">To:</label>
+                        <select name="toCurrency" id="toCurrency">
+                            <option selected>...</option>
+                            <?php
+                                require_once("includes/db_conn.php");
+                                $to_convert = "SELECT * FROM currencies";
+                                $to_results = $conn->query($to_convert);
 
-                        echo "<div class='form-group'>";
-                        echo "<label for='walletTo'>Wallet Sender:</label>";
-                        echo "<select name='walletTo' id='walletto'>";
-                            echo "<option selected>To</option>";
-                            /* 
-                            while ($obj = $wallets->fetch_object()) {
-                                echo "<option value='{$obj->wallet}'></option>";
-                            } 
-                            */
-                            echo "</select>";
-                        echo "</div>";
-                    ?>
-                </form>
+                                while ($obj = $to_results->fetch_object()) {
+                                    echo "<option value='{$obj->currency_id}'>{$obj->shorthand}</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button id="convertbtn" class="btn btn-warning">Convert</button>
+                    </div>
+                    <div id="result"></div>
             </div>
 
             <div id="bank-wallet" class="tabcontent">

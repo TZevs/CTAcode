@@ -32,27 +32,24 @@
 
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $userEmail = trim($_POST['email']);
-                    $userPassword = $_POST['input_password'];
+                    $provided_password = $_POST['input_password'];
 
-                    $hashed_password = hash('sha256', $userPassword);
+                    $hashed_password = hash('sha256', $provided_password);
 
                     $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND 'password' = '$hashed_password'";
                     $result = $conn->query($sql);
                     
-                    if (empty($userEmail) OR empty($userPassword)) {
+                    if (empty($userEmail) OR empty($provided_password)) {
                         echo "<div class='alert alert-danger'>Please enter your email and password.</div>";
+                    }
+                    $user = $result->fetch_assoc();
+                    $user_suspended = $user['suspended'];
+                    if ($user_suspended == 'True') {
+                        echo "<div class='alert alert-danger'>Sorry, this account has been suspended.</div>";
                     }
 
                     if (mysqli_num_rows($result) == 1) {
-                        $user = mysqli_fetch_assoc($result);
-                        $_SESSION['userEmail'] = $userPassword;
-
-                        if ($user['suspended'] === 'False') {
-                            header("Location: wallets.php");
-                            exit();
-                        } else {
-                            echo "<div class='alert alert-danger'>Sorry, this account has been suspended.</div>";
-                        }
+                        $_SESSION['userEmail'] = $provided_password;
                     } else {
                         echo "<div class='alert alert-danger'>Sorry, this login does not match an account. <a href='login.php'>Please try again.</a></div>";
                     }
