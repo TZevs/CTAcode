@@ -37,7 +37,6 @@
                     $password = $_POST["input_password"];
                     $confirmPassword = $_POST["confirm_password"];
 
-                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $errors = array();
 
                     if (empty($firstName) OR empty($lastName) OR empty($email) OR empty($dob) OR empty($password) OR empty($confirmPassword)) {
@@ -58,8 +57,8 @@
                             echo "<div class='alert alert-danger'>$error</div>";
                         }
                     } else {
-                        $sql = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$hashed_password','$dob')";
-                        if ($conn->query($sql) === TRUE) {
+                        $addRecord = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$password','$dob')";
+                        if ($conn->query($addRecord) === TRUE) {
                             echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
                         } else {
                             die("Something went wrong");

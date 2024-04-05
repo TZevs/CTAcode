@@ -32,24 +32,23 @@
 
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $userEmail = trim($_POST['email']);
-                    $provided_password = $_POST['input_password'];
+                    $password_input = $_POST['input_password'];
 
-                    $hashed_password = hash('sha256', $provided_password);
-
-                    $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND 'password' = '$hashed_password'";
+                    $sql = "SELECT * FROM customeraccount WHERE email_address = '$userEmail' AND 'customer_password' = '$password_input'";
                     $result = $conn->query($sql);
                     
                     if (empty($userEmail) OR empty($provided_password)) {
                         echo "<div class='alert alert-danger'>Please enter your email and password.</div>";
                     }
-                    $user = $result->fetch_assoc();
-                    $user_suspended = $user['suspended'];
+                    $user = $result->fetch_assoc($result);
+                    $user_suspended = $user['suspension'];
                     if ($user_suspended == 'True') {
                         echo "<div class='alert alert-danger'>Sorry, this account has been suspended.</div>";
                     }
 
                     if (mysqli_num_rows($result) == 1) {
-                        $_SESSION['userEmail'] = $provided_password;
+                        $_SESSION['userEmail'] = $userEmail;
+                        header("Location: wallets.php");
                     } else {
                         echo "<div class='alert alert-danger'>Sorry, this login does not match an account. <a href='login.php'>Please try again.</a></div>";
                     }
@@ -65,7 +64,6 @@
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Login" name="login" class="btn btn-primary">
-                    <input type="submit" value="Admin Login" name="adminlogin" class="btn btn-warning">
                 </div>
             </form>
         </div>
