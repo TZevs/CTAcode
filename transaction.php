@@ -1,3 +1,17 @@
+<?php
+    session_start();
+
+    if(!isset($_SESSION['userEmail'])) {
+        header("Location: login.php");
+        exit();
+    }
+    $userEmail = $_SESSION['userEmail'];
+
+    require_once("includes/db_conn.php");
+
+    $convert = "SELECT * FROM currency";
+    $results = $conn->query($convert);
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -5,7 +19,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href  ="styles/main.css" />
-        <script src="scripts/functions.js"></script>
+        <script src="scripts/nav.js"></script>
         <script src="https://kit.fontawesome.com/683ed5d49e.js" crossorigin="anonymous"></script>
         <title>Account</title>
     </head>
@@ -26,11 +40,6 @@
         </header>
 
         <div class="container">
-            <div class="transaction-tabs tabs">
-                <button class="tablinks" onclick="openTransfers(event, 'wallet-wallet')">Wallet To Wallet</button>
-                <button class="tablinks" onclick="openTransfers(event, 'bank-wallet')">Bank To Wallet</button>
-            </div>
-
             <div id="wallet-wallet" class="tabcontent">
                 <h2>Wallet To Wallet</h2>
                 <span onclick="this.parentElement.style.display = 'none'" class="close">x</span>
@@ -39,11 +48,7 @@
                         <select name="fromCurrency" id="fromCurrency">
                             <option selected>...</option>
                             <?php
-                                require_once("includes/db_conn.php");
-                                $from_convert = "SELECT * FROM currencies";
-                                $from_results = $conn->query($convert_rates);
-
-                                while ($obj = $from_results->fetch_object()) {
+                                while ($obj = $results->fetch_object()) {
                                     echo "<option value='{$obj->currency_id}'>{$obj->shorthand}</option>";
                                 }
                             ?>
@@ -58,7 +63,6 @@
                         <select name="toCurrency" id="toCurrency">
                             <option selected>...</option>
                             <?php
-                                require_once("includes/db_conn.php");
                                 $to_convert = "SELECT * FROM currencies";
                                 $to_results = $conn->query($to_convert);
 
@@ -72,16 +76,6 @@
                         <button id="convertbtn" class="btn btn-warning">Convert</button>
                     </div>
                     <div id="result"></div>
-            </div>
-
-            <div id="bank-wallet" class="tabcontent">
-                <h2>Bank To Wallet</h2>
-                <span onclick="this.parentElement.style.display = 'none'" class="close">x</span>
-                <form action="" method="POST">
-                    <div class="form-group">
-                        
-                    </div>
-                </form>
             </div>
         </div>
 

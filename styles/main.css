@@ -76,7 +76,7 @@ header {
 }
 .tabs button:hover {
     background-color: #00b168;
-    color: white; /* Check this actually changes the color. */
+    color: white; 
 }
 .tabs button.active {
     background-color: rgb(255, 115, 64);

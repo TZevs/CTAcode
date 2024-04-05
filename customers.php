@@ -1,3 +1,6 @@
+<?php
+    require_once("includes/db_conn.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,7 +28,6 @@
         <div class="container">
             <h2 class="text-center">Customers</h2>
             <?php
-                require_once("includes/db_conn.php");
                 $customerInfo = "SELECT * FROM customeraccounts"; 
                 $customerInfo_results = $conn->query($customerInfo);
 

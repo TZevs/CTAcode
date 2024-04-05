@@ -1,5 +1,4 @@
 <?php
-    /*
     session_start();
 
     if(!isset($_SESSION['userEmail'])) {
@@ -7,7 +6,17 @@
         exit();
     }
     $userEmail = $_SESSION['userEmail'];
-    */
+
+    require_once("includes/db_conn.php");
+
+    $userInfo = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
+    $info_result = mysqli_query($conn, $userInfo);
+
+    /*$stmt = $conn->prepare("SELECT * FROM customeraccounts WHERE email_address = ?");
+    $stmt->bind_param('s', $_GET['email_address']);
+    $stmt->execute();
+    $result = $stmt->get_result();*/ 
+    // Error: Attempt to read property 'first_name' on null.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,20 +47,23 @@
 
         <div class="container">
             <h2>Account Details</h2>
-            
-            <div>
-                <h3>First Name: <?php echo "{$obj->first_name}"; ?></h3>
-                <h3>Middle Name: <?php echo "{$obj->middle_name}"; ?></h3>
-                <h3>Last Name: <?php echo "{$obj->last_name}"; ?></h3>
-                <h3>Date of Birth: <?php echo "{$obj->dob}"; ?></h3>
-            </div>
+            <?php
+            $user = mysqli_fetch_assoc($info_result);
+            echo "<div>";
+            echo "<h3> First Name: " . $user['first_name'] . "</h3>";
+            echo "<h3> Middle Name: " . $user['middle_name'] . "</h3>";
+            echo "<h3> Surname: " . $user['last_name'] . "</h3>";
+            echo "<h3> Date of Birth: " . $user['dob'] . "</h3>";
+            echo "<h3> Email Address: " . $user['email_address'] . "</h3>";
+            echo "</div>";
+            ?>
 
             <form method="POST" action="">
                 <div class="form-group">
-                    <label for="email">Email Address:</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo $obj->email_address ?>">
+                    <label for="email">Change Email Address:</label>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="example@example.com">
                 </div>
-                <div class="form-group">
+                <div class="form-group"> 
                     <label for="input_password">Change Password:</label>
                     <input type="password" class="form-control" id="input_password" name="input_password" placeholder="********">
                 </div>

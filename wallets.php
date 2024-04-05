@@ -7,7 +7,7 @@
     }
     $userEmail = $_SESSION['userEmail'];
 
-    //require_once("includes/db_conn.php");
+    require_once("includes/db_conn.php");
     /*
     $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
     $result = $conn->query($customer);
@@ -46,7 +46,6 @@
         </header>
 
         <div class="container">
-            <h4>Main Wallet</h4>
             <?php /*
                 echo "<div class='card wb-75 mb-3'>";
                     echo "<div class='card-body'>";
@@ -80,7 +79,6 @@
                                 <select name="selectCurrency" id="selectCurrency">
                                     <option selected>...</option>
                                     <?php
-                                        require_once("includes/db_conn.php");
                                         $walletCurrency = "SELECT currency_name, shorthand FROM currencies";
                                         $wallet_results = $conn->query($updateRates);
 
