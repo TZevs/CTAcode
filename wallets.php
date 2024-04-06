@@ -5,18 +5,14 @@
         header("Location: login.php");
         exit();
     }
-    $userEmail = $_SESSION['userEmail'];
+    $customerEmail = $_SESSION['userEmail'];
 
     require_once("includes/db_conn.php");
-    /*
-    $sql = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
-    $result = $conn->query($customer);
-    $customer = mysqli_fetch_assoc($result);
-    $id = $customer['customer_ID'];
 
-    $wallet = "SELECT * FROM currencywallets WHERE customer_id = '$id'";
-    $wallet_results = $conn->query($wallet);
-    */
+    $info = "SELECT * FROM customeraccounts
+                INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
+                WHERE customeraccounts.email_address = '$customerEmail'";
+    $info_results = $conn->query($info);
 
 ?>
 <!DOCTYPE html>
@@ -37,6 +33,7 @@
             </div>
             <nav class="header-navbar">
                 <ul class="header-navbar-list">
+                    <li class="header-navbar-list-item"><a href="index.php">Home</a></li>
                     <li class="header-navbar-list-item item-active"><a href="wallets.php">Wallets</a></li>
                     <li class="header-navbar-list-item"><a href="transaction.php">Transactions</a></li>
                     <li class="header-navbar-list-item"><a href="exchange.php">Exchange Rates</a></li>
@@ -46,31 +43,25 @@
         </header>
 
         <div class="container">
-            <?php /*
-                echo "<div class='card wb-75 mb-3'>";
+            <h3>Your Wallets</h3>
+            <?php 
+                while ($obj = $info_results->fetch_object()) {
+                    echo "<div class='card wb-75 mb-3'>";
                     echo "<div class='card-body'>";
-                        echo "<h5 class='card-title'>Currency: {$obj->currency}</h5>";
+                        echo "<h5 class='card-title'>Currency: {$obj->curreny_id}</h5>";
                         echo "<p class='card-text'>Balance: {$obj->amount}</p>";
+                        echo "<a class='btn btn-info' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>
+                                Transactions
+                            </a>";
+                        echo "<div class='collapse' id='hiddenTransactions'>
+                                <div class='card card-body'>
+                                    <h6>Transactions for this wallet</h6>
+                                </div>
+                            </div>";
                     echo "</div>";
                 echo "</div>";
-            */
+                }
             ?>
-
-            <h4>Currency Wallets</h4>
-                <div class='card wb-75 mb-3'>
-                    <div class='card-body'>
-                        <h5 class='card-title'>Currency: {$obj->currency_sign} - {$obj->currency_name}</h5>
-                        <p class='card-text'>Balance: {$obj->currency_sign}</p>
-                        <a class='btn btn-info' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>
-                            Transactions
-                        </a>
-                        <div class='collapse' id='hiddenTransactions'>
-                            <div class="card card-body">
-                                <h6>Transactions for this wallet</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             <h5>Add Wallet</h5>
                 <div class="add-wallet">
                     <form action="" method="POST">

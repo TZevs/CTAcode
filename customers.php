@@ -1,5 +1,8 @@
 <?php
     require_once("includes/db_conn.php");
+    $customerInfo = "SELECT * FROM customeraccounts
+                        INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id"; 
+    $info_results = $conn->query($customerInfo);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,19 +31,17 @@
         <div class="container">
             <h2 class="text-center">Customers</h2>
             <?php
-                $customerInfo = "SELECT * FROM customeraccounts"; 
-                $customerInfo_results = $conn->query($customerInfo);
-
-                while ($obj = $customerInfo_results->fetch_object()) {
+                while ($obj = $info_results->fetch_object()) {
                     echo "<div class='card'>";
 
                         echo "<div class='card-header'>";
                         echo "Customer ID: {$obj->customer_id}";
 
                         echo "<form action='' method='POST'>
-                            <div class='form-check form-switch'>
+                            <div class='form-group'>
+                                <input type='checkbox' name='suspend' id='suspend'>
                                 <label for='suspend'>Suspend Account</label>
-                                <input class='form-check-input' type='checkbox' role='switch' id='suspend'>
+                                <input type='submit' value='Confirm Suspension' class='btn btn-dark btn-sm'>
                             </div>
                         </form>";
                         echo "</div>";

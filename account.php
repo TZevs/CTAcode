@@ -12,11 +12,6 @@
     $userInfo = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
     $info_result = mysqli_query($conn, $userInfo);
 
-    /*$stmt = $conn->prepare("SELECT * FROM customeraccounts WHERE email_address = ?");
-    $stmt->bind_param('s', $_GET['email_address']);
-    $stmt->execute();
-    $result = $stmt->get_result();*/ 
-    // Error: Attempt to read property 'first_name' on null.
 ?>
 <!DOCTYPE html>
 <html lang="en">

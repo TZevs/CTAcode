@@ -5,12 +5,7 @@
         header("Location: login.php");
         exit();
     }
-    $userEmail = $_SESSION['userEmail'];
-
-    require_once("includes/db_conn.php");
-
-    $convert = "SELECT * FROM currency";
-    $results = $conn->query($convert);
+    $customerEmail = $_SESSION['userEmail'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +14,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href  ="styles/main.css" />
-        <script src="scripts/nav.js"></script>
+        <script src="scripts/convert.js"></script>
         <script src="https://kit.fontawesome.com/683ed5d49e.js" crossorigin="anonymous"></script>
         <title>Account</title>
     </head>
@@ -40,40 +35,32 @@
         </header>
 
         <div class="container">
-            <div id="wallet-wallet" class="tabcontent">
+            <div>
                 <h2>Wallet To Wallet</h2>
-                <span onclick="this.parentElement.style.display = 'none'" class="close">x</span>
-                    <div class="form-group">
-                        <label for="fromCurrency">From:</label>
-                        <select name="fromCurrency" id="fromCurrency">
-                            <option selected>...</option>
-                            <?php
-                                while ($obj = $results->fetch_object()) {
-                                    echo "<option value='{$obj->currency_id}'>{$obj->shorthand}</option>";
-                                }
-                            ?>
-                        </select>
-                    </div>
                     <div class="form-group">
                         <label for="amount">Amount:</label>
-                        <input type="number" id="amount" min="0" step="0.01">
+                        <input type="number" id="amount" name="amount" class="form-control" min="0" step="0.01">
                     </div>
                     <div class="form-group">
-                        <label for="toCurrency">To:</label>
-                        <select name="toCurrency" id="toCurrency">
+                        <label for="from">From:</label>
+                        <select name="from" id="from" class="form-control">
                             <option selected>...</option>
-                            <?php
-                                $to_convert = "SELECT * FROM currencies";
-                                $to_results = $conn->query($to_convert);
-
-                                while ($obj = $to_results->fetch_object()) {
-                                    echo "<option value='{$obj->currency_id}'>{$obj->shorthand}</option>";
-                                }
-                            ?>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="USD">USD - American Dollar</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <button id="convertbtn" class="btn btn-warning">Convert</button>
+                        <label for="to">To:</label>
+                        <select name="to" id="to" class="form-control">
+                            <option selected>...</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="USD">USD - American Dollar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="convertCurrency()">Convert</button>
                     </div>
                     <div id="result"></div>
             </div>

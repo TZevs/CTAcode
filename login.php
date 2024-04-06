@@ -35,10 +35,10 @@
                     $password_input = $_POST['input_password'];
 
                     $customer = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND password = '$password_input'";
-                    $customer_result = mysqli_query($conn, $sql);
+                    $customer_result = mysqli_query($conn, $customer);
 
                     $admin = "SELECT * FROM adminaccount WHERE email_address = '$userEmail' AND admin_password = '$password_input'";
-                    $admin_result = mysqli_query($conn, $sql);
+                    $admin_result = mysqli_query($conn, $admin);
                     
                     if (empty($userEmail) OR empty($password_input)) {
                         echo "<div class='alert alert-danger'>Enter your email and password. <a href='login.php'>Please try again.</a></div>";
@@ -50,7 +50,7 @@
                     if ($userOne['suspension'] === 'True') {
                         echo "<div class='alert alert-danger'>Sorry, this account has been suspended.</div>";
                     } else if (mysqli_num_rows($customer_result) == 1) {
-                        $_SESSION['userEmail'] = $userEmail;
+                        $_SESSION['userEmail'] = $customerEmail;
                         header("Location: wallets.php");
                     } else if (mysqli_num_rows($admin_result) == 1) {
                         if ($userTwo['type_id'] === 2 OR $userTwo['type_id'] === 3) {

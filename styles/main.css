@@ -81,9 +81,6 @@ header {
 .tabs button.active {
     background-color: rgb(255, 115, 64);
 }
-.tabcontent {
-    display: none;
-}
 .tabcontent h2 {
     display: inline-block;
 }

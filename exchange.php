@@ -51,42 +51,6 @@
                     }
                 ?>
             </table>
-            <div class="container-exchange-updates">
-                <h3>Update Currency Exchange Rates:</h3>
-                <form action="" method="POST">
-                    <div class="form-group">
-                        <label for="selectCurrency">Select Currency:</label>
-                        <select name="selectCurrency" id="selectCurrency">
-                            <option selected>...</option>
-                            <?php
-                                $updateRates = "SELECT currency_name, shorthand FROM currency";
-                                $update_results = $conn->query($updateRates);
-
-                                while ($obj = $update_results->fetch_object()) {
-                                    echo "<option value='{$obj->currency_id}'>{$obj->shorthand} : {$obj->currency_name}</option>";
-                                }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="newRate">New Exchange Rate:</label>
-                        <input type="number" name="newRate" id="newRate" class="form-control" min="0" step="0.01">
-                    </div>
-                    <div class="row">
-                        <div class="form-group col">
-                            <label for="highRate">New Highest Rate (last 52wks):</label>
-                            <input type="number" name="highRate" id="highRate" class="form-control" min="0" step="0.01">
-                        </div>
-                        <div class="form-group col">
-                            <label for="lowRate">New Lowest Rate (last 52wks):</label>
-                            <input type="number" name="lowRate" id="lowRate" class="form-control" min="0" step="0.01">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Update" name="submit" class="btn btn-warning">
-                    </div>
-                </form>
-            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
