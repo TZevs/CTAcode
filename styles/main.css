@@ -58,6 +58,9 @@ header {
 .form-group {
     margin: 15px 0px;
 }
+#transaction-form {
+    display: none;
+}
 
 /* Tabs */
 .tabs {
@@ -93,4 +96,5 @@ header {
     color: white;
     text-decoration: none;
 }
+
 

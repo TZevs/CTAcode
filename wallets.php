@@ -69,14 +69,7 @@
                             <label for="selectCurrency">Select Currency:</label>
                                 <select name="selectCurrency" id="selectCurrency">
                                     <option selected>...</option>
-                                    <?php
-                                        $walletCurrency = "SELECT currency_name, shorthand FROM currencies";
-                                        $wallet_results = $conn->query($updateRates);
-
-                                        while ($obj = $wallet_results->fetch_object()) {
-                                            echo "<option value='{$obj->currency_id}'>{$obj->shorthand} : {$obj->currency_name}</option>";
-                                        }
-                                    ?>
+                                        
                                 </select>
                         </div>
                         <div class="form-group">

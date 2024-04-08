@@ -11,6 +11,9 @@ function convertCurrency() {
             const convertRate = data.conversion_rates[to];
             const convertedAmount = amount * convertRate;
             document.getElementById('result').innerHTML = `${amount} ${from} = ${convertedAmount} ${to}`;
+            document.getElementById('currencyFrom').innerHTML = document.getElementById("from");
+
+            document.getElementById('currencyTo').innerHTML = `${to}`;
     })
     .catch(error => {
         console.error('Error fetching data:', error);

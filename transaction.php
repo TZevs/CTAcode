@@ -1,11 +1,12 @@
 <?php
-    session_start();
+    /*session_start();
 
     if(!isset($_SESSION['userEmail'])) {
         header("Location: login.php");
         exit();
     }
     $customerEmail = $_SESSION['userEmail'];
+    */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,9 +61,24 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button onclick="convertCurrency()">Convert</button>
+                        <button onclick="convertCurrency()" class="btn btn-info">Convert</button>
                     </div>
+
                     <div id="result"></div>
+            </div>
+            <div id="transaction-form">
+                <form action="" method="POST">
+                    <h4>Confirm Transaction</h4>
+                    <div class="form-group">
+                        <label for="from" id="currencyFrom"></label>
+                        <input type="text" id="oldAmount" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="to" id="currencyTo"></label>
+                        <input type="text" id="newAmount" class="form-control" readonly>
+                    </div>
+                    <input type="submit" name="submit" class="btn btn-primary" value="Confirm Transaction">
+                </form>
             </div>
         </div>
 

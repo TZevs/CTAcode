@@ -40,27 +40,27 @@
                     $admin = "SELECT * FROM adminaccount WHERE email_address = '$userEmail' AND admin_password = '$password_input'";
                     $admin_result = mysqli_query($conn, $admin);
                     
+                    $errors = array();
+
                     if (empty($userEmail) OR empty($password_input)) {
-                        echo "<div class='alert alert-danger'>Enter your email and password. <a href='login.php'>Please try again.</a></div>";
+                        array_push($errors, "Enter your email and password. <a href='login.php'>Please try again.</a>");
                     }
+                    $userOne = mysqli_fetch_assoc($customer_result);                    
+                    if ($userOne['suspension'] != "False") {
+                        array_push($errors, "Sorry, this account has been suspended.");
+                    }  
 
-                    $userOne = mysqli_fetch_assoc($customer_result);
-                    $userTwo = mysqli_fetch_assoc($admin_result);
-
-                    if ($userOne['suspension'] === 'True') {
-                        echo "<div class='alert alert-danger'>Sorry, this account has been suspended.</div>";
-                    } else if (mysqli_num_rows($customer_result) == 1) {
+                    if (count($errors) >0) {
+                        foreach ($errors as $error) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                    } else if (mysqli_num_rows($customer_result) === 1) {
                         $_SESSION['userEmail'] = $customerEmail;
                         header("Location: wallets.php");
-                    } else if (mysqli_num_rows($admin_result) == 1) {
-                        if ($userTwo['type_id'] === 2 OR $userTwo['type_id'] === 3) {
-                            $_SESSION['userEmail'] = $adminEmail;
-                            header("Location: customers.php");
-                        } else {
-                            echo "<div class='alert alert-danger'>Sorry, your a legal admin.</div>";
-                        }
-                    }
-                    else {
+                    } else if (mysqli_num_rows($admin_result) === 1) {
+                        $_SESSION['userEmail'] = $adminEmail;
+                        header("Location: customers.php");
+                    } else {
                         echo "<div class='alert alert-danger'>Sorry, this login does not match an account. <a href='login.php'>Please try again.</a></div>";
                     }
                     mysqli_close($conn);
@@ -68,13 +68,13 @@
             ?>
             <form action="login.php" method="POST">
                 <div class="form-group">
-                    <input type="email" placeholder="Enter Email" name="email" class="form-control">
+                    <input type="email" id="email" placeholder="Enter Email" name="email" class="form-control">
                 </div>
                 <div class="form-group mb-3">
-                    <input type="password" placeholder="Passsword" name="input_password" class="form-control">
+                    <input type="password" id="password" placeholder="Passsword" name="input_password" class="form-control">
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Login" name="login" class="btn btn-primary">
+                    <input type="submit" id="submit" value="Login" name="login" class="btn btn-primary">
                 </div>
             </form>
         </div>

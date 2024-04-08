@@ -39,9 +39,12 @@
 
                         echo "<form action='' method='POST'>
                             <div class='form-group'>
-                                <input type='checkbox' name='suspend' id='suspend'>
-                                <label for='suspend'>Suspend Account</label>
-                                <input type='submit' value='Confirm Suspension' class='btn btn-dark btn-sm'>
+                                <label for='suspend'>Suspension Status:</label>
+                                <select name='suspend' id='suspend' class='class-control'>
+                                    <option value='False' selected>False</option>
+                                    <option value='True'>True</option>
+                                </select>
+                                <input type='submit' value='Suspend Account' class='btn btn-dark btn-sm'>
                             </div>
                         </form>";
                         echo "</div>";
