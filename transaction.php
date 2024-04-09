@@ -5,7 +5,7 @@
         header("Location: login.php");
         exit();
     }
-    $customerEmail = $_SESSION['userEmail'];
+    $userEmail = $_SESSION['userEmail'];
     */
 ?>
 <!DOCTYPE html>

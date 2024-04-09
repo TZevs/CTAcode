@@ -5,13 +5,13 @@
         header("Location: login.php");
         exit();
     }
-    $customerEmail = $_SESSION['userEmail'];
+    $userEmail = $_SESSION['userEmail'];
 
     require_once("includes/db_conn.php");
 
     $info = "SELECT * FROM customeraccounts
                 INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
-                WHERE customeraccounts.email_address = '$customerEmail'";
+                WHERE customeraccounts.email_address = '$userEmail'";
     $info_results = $conn->query($info);
 
 ?>

@@ -46,19 +46,19 @@
                         array_push($errors, "Enter your email and password. <a href='login.php'>Please try again.</a>");
                     }
                     $userOne = mysqli_fetch_assoc($customer_result);                    
-                    if ($userOne['suspension'] != "False") {
+                    /*if ($userOne['suspension'] != "False") {
                         array_push($errors, "Sorry, this account has been suspended.");
-                    }  
+                    } */ 
 
                     if (count($errors) >0) {
                         foreach ($errors as $error) {
                             echo "<div class='alert alert-danger'>$error</div>";
                         }
                     } else if (mysqli_num_rows($customer_result) === 1) {
-                        $_SESSION['userEmail'] = $customerEmail;
+                        $_SESSION['userEmail'] = $userEmail;
                         header("Location: wallets.php");
                     } else if (mysqli_num_rows($admin_result) === 1) {
-                        $_SESSION['userEmail'] = $adminEmail;
+                        $_SESSION['userEmail'] = $userEmail;
                         header("Location: customers.php");
                     } else {
                         echo "<div class='alert alert-danger'>Sorry, this login does not match an account. <a href='login.php'>Please try again.</a></div>";

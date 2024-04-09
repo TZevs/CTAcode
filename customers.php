@@ -1,4 +1,12 @@
 <?php
+    session_start();
+
+    if(!isset($_SESSION['userEmail'])) {
+         header("Location: login.php");
+         exit();
+    }
+    $userEmail = $_SESSION['userEmail'];
+ 
     require_once("includes/db_conn.php");
     $customerInfo = "SELECT * FROM customeraccounts
                         INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id"; 
