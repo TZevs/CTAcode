@@ -9,7 +9,8 @@ function convertCurrency() {
     .then(response => response.json())
     .then(data => {
             const convertRate = data.conversion_rates[to];
-            const convertedAmount = amount * convertRate;
+            let convertedAmount = amount * convertRate;
+            convertedAmount = parseFloat(convertedAmount).toFixed(2);
             document.getElementById('result').innerHTML = `${amount} ${from} = ${convertedAmount} ${to}`;
             document.getElementById('currencyFrom').innerHTML = document.getElementById("from");
 

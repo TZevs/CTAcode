@@ -5,7 +5,7 @@
         header("Location: login.php");
         exit();
     }
-    $userEmail = $_SESSION['userEmail'];
+    $userEmail = $_SESSION['userEmail']; 
 
     require_once("includes/db_conn.php");
 
@@ -48,7 +48,7 @@
                 while ($obj = $info_results->fetch_object()) {
                     echo "<div class='card wb-75 mb-3'>";
                     echo "<div class='card-body'>";
-                        echo "<h5 class='card-title'>Currency: {$obj->curreny_id}</h5>";
+                        echo "<h5 class='card-title'>Currency: {$obj->currency_id}</h5>";
                         echo "<p class='card-text'>Balance: {$obj->amount}</p>";
                         echo "<a class='btn btn-info' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>
                                 Transactions
@@ -64,13 +64,35 @@
             ?>
             <h5>Add Wallet</h5>
                 <div class="add-wallet">
-                    <form action="" method="POST">
+                    <?php
+                        if (isset($_POST["submit"])) {
+                            $newWallet = $_POST['selectCurrency'];
+
+                            $userID = "SELECT customer_id FROM customeraccounts";
+                            $result = mysqli_query($conn, $userID);
+                            $id = $result->fetch_object();
+
+                            $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ($id->customer_id, '$newWallet', 0)";
+                            if ($conn->query($addWallet) === TRUE) {
+                                echo "<div class='alert alert-success'>Wallet Added. <a href='wallets.php'>Refresh</a></div>";
+                            } else {
+                                echo "<div class='alert alert-danger'>Error adding wallet: " . $conn->error . "</div>";
+                            }
+                        }
+                    ?>
+                    <form action="wallets.php" method="POST">
                         <div class="form-group">
-                            <label for="selectCurrency">Select Currency:</label>
-                                <select name="selectCurrency" id="selectCurrency">
-                                    <option selected>...</option>
-                                        
-                                </select>
+                            <select name="selectCurrency" id="selectCurrency" class="form-select">
+                                <option selected>Select a Currency: </option>
+                                <?php 
+                                $currencyOptions = "SELECT * FROM currency";
+                                $option_results = $conn->query($currencyOptions);
+
+                                while ($options = mysqli_fetch_assoc($option_results)) {
+                                    echo "<option value='" . $options["currency_id"] . "'>" . $options["currency_id"] . " - " . $options["currency_name"] . "</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="form-group">
                             <input type="submit" value="+" name="submit" class="btn btn-warning">

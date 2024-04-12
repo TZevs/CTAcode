@@ -8,27 +8,10 @@
     $userEmail = $_SESSION['userEmail'];
  
     require_once("includes/db_conn.php");
-    $customerInfo = "SELECT * FROM customeraccounts"; 
+    $customerInfo = "SELECT * FROM customeraccounts
+                    INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id"; 
+                
     $info_results = $conn->query($customerInfo);
-
-    if (isset($_POST["submit"])) {
-        $id = $_POST['customerid'];
-    
-        $databaseStatus = "SELECT suspension FROM customeraccounts WHERE customer_id = '$id'";
-        $status_result = mysqli_query($conn, $databaseStatus);
-        $currentStatus = mysqli_fetch_assoc($status_result)['suspension'];
-        
-        $newStatus = $currentStatus == 'True' ? 'False' : 'True';
-    
-        $updateSuspend = "UPDATE customeraccounts SET suspension='$newStatus' WHERE customer_id = '$id'"; 
-        if ($conn->query($updateSuspend) === TRUE) {
-            echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
-        } else {
-            echo "<div class='alert alert-danger'>Error updating suspension: " . $conn->error . "</div>";
-        }
-    }
-        
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,18 +40,49 @@
         <div class="container">
             <h2 class="text-center">Customers</h2>
             <?php
+                if (isset($_POST["submit"])) {
+                    $id = $_POST['customerid'];
+                
+                    $databaseStatus = "SELECT suspension FROM customeraccounts WHERE customer_id = '$id'";
+                    $status_result = mysqli_query($conn, $databaseStatus);
+                    $currentStatus = mysqli_fetch_assoc($status_result)['suspension'];
+                    
+                    $newStatus = $currentStatus == 'True' ? 'False' : 'True';
+                
+                    $updateSuspend = "UPDATE customeraccounts SET suspension='$newStatus' WHERE customer_id = '$id'"; 
+                    if ($conn->query($updateSuspend) === TRUE) {
+                        echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Error updating suspension: " . $conn->error . "</div>";
+                    }
+                }
+
                 while ($obj = $info_results->fetch_object()) {
                     echo "<form action='customers.php' method='POST'>";
                         echo "<div class='card'>";
+
                             echo "<div class='card-header'>";
                                 echo "<h5>Customer ID: {$obj->customer_id}</h5>";
                                 echo "<p>Is Suspended: <b>{$obj->suspension}</b></p>";
                                 echo "<input type='checkbox' name='suspend' id='suspend' class='check-input'>";
                                 echo "<label for='suspend'>Toggle Suspension</label>";
                             echo "</div>";
+
                             echo "<div class='card-body'>";
                                 echo "<p>Name: {$obj->first_name} {$obj->middle_name} {$obj->last_name}</p>";
                                 echo "<p>Email Address: {$obj->email_address}</p>";
+                                echo "<a class='btn btn-dark' data-bs-toggle='collapse' href='#hiddenWallets' role='button' aria-expanded='false'>Wallets</a>";
+
+                                echo "<div class='collapse' id='hiddenWallets'>
+                                        <h6>Wallets for this account.</h6>
+
+                                        <a class='btn btn-secondary btn-sm' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>Transactions</a>
+                                        <div class='collapse' id='hiddenTransactions'>
+                                            <h6>Transactions for this wallet.</h6>
+                                        </div>";
+
+                                echo "</div>";
+
                             echo "</div>";
                             echo "<div class='card-footer'>
                                     <input type='number' Placeholder='Confirm Customer ID' name='customerid' class='form-control'>

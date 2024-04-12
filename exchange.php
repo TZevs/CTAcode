@@ -1,5 +1,18 @@
 <?php
-    require_once("includes/db_conn.php");
+    require_once("includes/api_conn.php");
+    $curl = curl_init($api_url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $response_json = curl_exec($curl);
+
+    $response_data = json_decode($response_json, true);
+    
+    if ($response_data && isset($response_data['conversion_rates'])) {
+        $exchange_rates = $response_data['conversion_rates'];
+    } else {
+        echo "Failed to retrieve exchange rates";
+        exit;
+    } 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,24 +45,19 @@
             <h2>Currency Exchange Rates</h2>
             <table class="table table-striped">
                 <thead class="table-dark">
-                    <th>Currency</th>
+                    <th>Shorthand</th>
                     <th>Rate</th>
-                    <th>Highest in last year</th>
-                    <th>Lowest in last year</th>
                 </thead>
-                <?php
-                    $rates = "SELECT * FROM currency";
-                    $rates_result = $conn->query($rates);
-
-                    while ($obj = $rates_result->fetch_object()) {
-                        echo "<tr>";
-                        echo "<th>{$obj->currency_name}</th>";
-                        echo "<th>{$obj->currency_rate}</th>"; 
-                        echo "<th>{$obj->highest_rate}</th>"; 
-                        echo "<th>{$obj->lowest_rate}</th>"; 
-                        echo "</tr>";
-                    }
-                ?>
+                <tbody>
+                    <?php
+                        foreach ($exchange_rates as $currency => $rate) {
+                            echo "<tr>
+                                    <td>{$currency}</td>
+                                    <td>{$rate}</td>
+                                </tr>";
+                        }
+                    ?>
+                </tbody>
             </table>
         </div>
 

@@ -44,12 +44,12 @@
             <h2>Account Details</h2>
             <?php
             $user = mysqli_fetch_assoc($info_result);
-            echo "<div>";
-            echo "<h3> First Name: " . $user['first_name'] . "</h3>";
-            echo "<h3> Middle Name: " . $user['middle_name'] . "</h3>";
-            echo "<h3> Surname: " . $user['last_name'] . "</h3>";
-            echo "<h3> Date of Birth: " . $user['dob'] . "</h3>";
-            echo "<h3> Email Address: " . $user['email_address'] . "</h3>";
+            echo "<div class='account-details'>";
+            echo "<p> First Name: " . $user['first_name'] . "</p>";
+            echo "<p> Middle Name: " . $user['middle_name'] . "</p>";
+            echo "<p> Surname: " . $user['last_name'] . "</p>";
+            echo "<p> Date of Birth: " . $user['dob'] . "</p>";
+            echo "<p> Email Address: " . $user['email_address'] . "</p>";
             echo "</div>";
             ?>
 
