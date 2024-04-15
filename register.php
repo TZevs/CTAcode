@@ -61,7 +61,7 @@
                         if ($conn->query($addRecord) === TRUE) {
                             echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
                         } else {
-                            die("Something went wrong");
+                            echo "<div class='alert alert-danger'>Error adding account: " . $conn->error . "</div>";
                         }
                     }
                 }

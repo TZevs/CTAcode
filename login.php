@@ -54,10 +54,10 @@
                         foreach ($errors as $error) {
                             echo "<div class='alert alert-danger'>$error</div>";
                         }
-                    } else if (mysqli_num_rows($customer_result) === 1) {
+                    } else if (mysqli_num_rows($customer_result) == 1) {
                         $_SESSION['userEmail'] = $userEmail;
                         header("Location: wallets.php");
-                    } else if (mysqli_num_rows($admin_result) === 1) {
+                    } else if (mysqli_num_rows($admin_result) == 1) {
                         $_SESSION['userEmail'] = $userEmail;
                         header("Location: customers.php");
                     } else {

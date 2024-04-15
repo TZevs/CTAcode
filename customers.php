@@ -8,9 +8,8 @@
     $userEmail = $_SESSION['userEmail'];
  
     require_once("includes/db_conn.php");
-    $customerInfo = "SELECT * FROM customeraccounts
-                    INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id"; 
-                
+    $customerInfo = "SELECT DISTINCT customeraccounts.customer_id, first_name, middle_name, last_name, email_address, suspension, currencywallet.currency_id, currencywallet.amount FROM customeraccounts
+                    INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id";  
     $info_results = $conn->query($customerInfo);
 ?>
 <!DOCTYPE html>
@@ -56,40 +55,47 @@
                         echo "<div class='alert alert-danger'>Error updating suspension: " . $conn->error . "</div>";
                     }
                 }
-
+                ?>
+                <?php 
+                $processedCustomerIDs = array();
                 while ($obj = $info_results->fetch_object()) {
-                    echo "<form action='customers.php' method='POST'>";
-                        echo "<div class='card'>";
+                    if (!in_array($obj->customer_id, $processedCustomerIDs)) {
+                        $processedCustomerIDs[] = $obj->customer_id;
+                        echo "<form action='customers.php' method='POST'>";
+                            echo "<div class='card'>";
 
-                            echo "<div class='card-header'>";
-                                echo "<h5>Customer ID: {$obj->customer_id}</h5>";
-                                echo "<p>Is Suspended: <b>{$obj->suspension}</b></p>";
-                                echo "<input type='checkbox' name='suspend' id='suspend' class='check-input'>";
-                                echo "<label for='suspend'>Toggle Suspension</label>";
-                            echo "</div>";
-
-                            echo "<div class='card-body'>";
-                                echo "<p>Name: {$obj->first_name} {$obj->middle_name} {$obj->last_name}</p>";
-                                echo "<p>Email Address: {$obj->email_address}</p>";
-                                echo "<a class='btn btn-dark' data-bs-toggle='collapse' href='#hiddenWallets' role='button' aria-expanded='false'>Wallets</a>";
-
-                                echo "<div class='collapse' id='hiddenWallets'>
-                                        <h6>Wallets for this account.</h6>
-
-                                        <a class='btn btn-secondary btn-sm' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>Transactions</a>
-                                        <div class='collapse' id='hiddenTransactions'>
-                                            <h6>Transactions for this wallet.</h6>
-                                        </div>";
-
+                                echo "<div class='card-header'>";
+                                    echo "<h5>Customer ID: {$obj->customer_id}</h5>";
+                                    echo "<p>Is Suspended: <b>{$obj->suspension}</b></p>";
+                                    echo "<input type='checkbox' name='suspend' id='suspend' class='check-input'>";
+                                    echo "<label for='suspend'>Toggle Suspension</label>";
                                 echo "</div>";
 
+                                echo "<div class='card-body'>";
+                                    echo "<p>Name: {$obj->first_name} {$obj->middle_name} {$obj->last_name}</p>";
+                                    echo "<p>Email Address: {$obj->email_address}</p>";
+                                    echo "<a class='btn btn-dark' data-bs-toggle='collapse' href='#hiddenWallets' role='button' aria-expanded='false'>Wallets</a>";
+
+                                    echo "<div class='collapse' id='hiddenWallets'>
+                                            <h6>Wallets for this account.</h6>
+
+                                            <a class='btn btn-secondary btn-sm' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>Transactions</a>
+                                            <div class='collapse' id='hiddenTransactions'>
+                                                <h6>Transactions for this wallet.</h6>
+                                            </div>";
+
+                                    echo "</div>";
+
+                                echo "</div>";
+                                echo "<div class='card-footer'>
+                                        <input type='number' Placeholder='Confirm Customer ID' name='customerid' class='form-control' required>
+                                        <div class='form-group'>
+                                            <input type='submit' name='submit' value='Update' class='btn btn-primary btn-sm'>
+                                        </div>
+                                    </div>";
                             echo "</div>";
-                            echo "<div class='card-footer'>
-                                    <input type='number' Placeholder='Confirm Customer ID' name='customerid' class='form-control'>
-                                    <input type='submit' name='submit' value='Update' class='btn btn-primary btn-sm'>
-                                </div>";
-                        echo "</div>";
-                    echo "</form>";
+                        echo "</form>";
+                    }
                 }
             ?>
         </div>
