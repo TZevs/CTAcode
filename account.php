@@ -9,9 +9,8 @@
 
     require_once("includes/db_conn.php");
 
-    $userInfo = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
-    $info_result = mysqli_query($conn, $userInfo);
-
+    $customerInfo = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
+    $customer_result = mysqli_query($conn, $customerInfo);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,17 +42,15 @@
         <div class="container">
             <h2>Account Details</h2>
             <?php
-            $user = mysqli_fetch_assoc($info_result);
+            $customer = mysqli_fetch_assoc($customer_result);
             echo "<div class='account-details'>";
-            echo "<p> First Name: " . $user['first_name'] . "</p>";
-            echo "<p> Middle Name: " . $user['middle_name'] . "</p>";
-            echo "<p> Surname: " . $user['last_name'] . "</p>";
-            echo "<p> Date of Birth: " . $user['dob'] . "</p>";
-            echo "<p> Email Address: " . $user['email_address'] . "</p>";
+            echo "<p> Name: " . $customer['first_name'] . ' ' . $customer['middle_name'] . ' ' . $customer['last_name'] . "</p>";
+            echo "<p> Date of Birth: " . $customer['dob'] . "</p>";
+            echo "<p> Email Address: " . $customer['email_address'] . "</p>";
             echo "</div>";
             ?>
 
-            <form method="POST" action="">
+            <form action="" method="POST">
                 <div class="form-group">
                     <label for="email">Change Email Address:</label>
                     <input type="text" class="form-control" id="email" name="email" placeholder="example@example.com">

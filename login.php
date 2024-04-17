@@ -46,9 +46,9 @@
                         array_push($errors, "Enter your email and password. <a href='login.php'>Please try again.</a>");
                     }
                     $userOne = mysqli_fetch_assoc($customer_result);                    
-                    /*if ($userOne['suspension'] != "False") {
+                    if ($userOne['suspension'] != "False") {
                         array_push($errors, "Sorry, this account has been suspended.");
-                    } */ 
+                    } 
 
                     if (count($errors) >0) {
                         foreach ($errors as $error) {

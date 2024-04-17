@@ -8,7 +8,8 @@
     $userEmail = $_SESSION['userEmail'];
  
     require_once("includes/db_conn.php");
-    $customerInfo = "SELECT DISTINCT customeraccounts.customer_id, first_name, middle_name, last_name, email_address, suspension, currencywallet.currency_id, currencywallet.amount FROM customeraccounts
+    $customerInfo = "SELECT DISTINCT customeraccounts.customer_id, first_name, middle_name, last_name, email_address, suspension, currencywallet.currency_id, currencywallet.amount, currencywallet.frozen, currencywallet.wallets_id 
+                    FROM customeraccounts
                     INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id";  
     $info_results = $conn->query($customerInfo);
 ?>
@@ -42,62 +43,108 @@
                 if (isset($_POST["submit"])) {
                     $id = $_POST['customerid'];
                 
-                    $databaseStatus = "SELECT suspension FROM customeraccounts WHERE customer_id = '$id'";
-                    $status_result = mysqli_query($conn, $databaseStatus);
-                    $currentStatus = mysqli_fetch_assoc($status_result)['suspension'];
+                    $errors = array();
+
+                    if (isset($_POST["suspend"])) {
+
+                        $databaseStatus = "SELECT suspension FROM customeraccounts WHERE customer_id = '$id'";
+                        $status_result = mysqli_query($conn, $databaseStatus);
+                        $currentStatus = mysqli_fetch_assoc($status_result)['suspension'];
+                        $newStatus = $currentStatus == 'True' ? 'False' : 'True';
                     
-                    $newStatus = $currentStatus == 'True' ? 'False' : 'True';
-                
-                    $updateSuspend = "UPDATE customeraccounts SET suspension='$newStatus' WHERE customer_id = '$id'"; 
-                    if ($conn->query($updateSuspend) === TRUE) {
-                        echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
-                    } else {
-                        echo "<div class='alert alert-danger'>Error updating suspension: " . $conn->error . "</div>";
+                        $updateSuspend = "UPDATE customeraccounts SET suspension='$newStatus' WHERE customer_id = '$id'"; 
+
+                        if ($conn->query($updateSuspend) === TRUE) {
+                            echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
+                        } else {
+                            echo "<div class='alert alert-danger'>Error updating suspension: " . $conn->error . "</div>";
+                        }
                     }
-                }
-                ?>
-                <?php 
-                $processedCustomerIDs = array();
-                while ($obj = $info_results->fetch_object()) {
-                    if (!in_array($obj->customer_id, $processedCustomerIDs)) {
-                        $processedCustomerIDs[] = $obj->customer_id;
-                        echo "<form action='customers.php' method='POST'>";
-                            echo "<div class='card'>";
+                    if (isset($_POST["freeze"])) {
+                        foreach ($_POST["freeze"] as $walletId) {
+                            
+                            $databaseStatus = "SELECT frozen FROM currencywallet WHERE wallets_id = '$walletId'";
+                            $status_result = mysqli_query($conn, $databaseStatus);
+                            $currentStatus = mysqli_fetch_assoc($status_result)['frozen'];
+                            $newStatus = $currentStatus == 'True' ? 'False' : 'True';
+                        
+                            $updateFreeze = "UPDATE currencywallet SET frozen='$newStatus' WHERE wallets_id = '$walletId'"; 
 
-                                echo "<div class='card-header'>";
-                                    echo "<h5>Customer ID: {$obj->customer_id}</h5>";
-                                    echo "<p>Is Suspended: <b>{$obj->suspension}</b></p>";
-                                    echo "<input type='checkbox' name='suspend' id='suspend' class='check-input'>";
-                                    echo "<label for='suspend'>Toggle Suspension</label>";
-                                echo "</div>";
-
-                                echo "<div class='card-body'>";
-                                    echo "<p>Name: {$obj->first_name} {$obj->middle_name} {$obj->last_name}</p>";
-                                    echo "<p>Email Address: {$obj->email_address}</p>";
-                                    echo "<a class='btn btn-dark' data-bs-toggle='collapse' href='#hiddenWallets' role='button' aria-expanded='false'>Wallets</a>";
-
-                                    echo "<div class='collapse' id='hiddenWallets'>
-                                            <h6>Wallets for this account.</h6>
-
-                                            <a class='btn btn-secondary btn-sm' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>Transactions</a>
-                                            <div class='collapse' id='hiddenTransactions'>
-                                                <h6>Transactions for this wallet.</h6>
-                                            </div>";
-
-                                    echo "</div>";
-
-                                echo "</div>";
-                                echo "<div class='card-footer'>
-                                        <input type='number' Placeholder='Confirm Customer ID' name='customerid' class='form-control' required>
-                                        <div class='form-group'>
-                                            <input type='submit' name='submit' value='Update' class='btn btn-primary btn-sm'>
-                                        </div>
-                                    </div>";
-                            echo "</div>";
-                        echo "</form>";
+                            if ($conn->query($updateFreeze) === TRUE) {
+                                echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
+                            } else {
+                                echo "<div class='alert alert-danger'>Error Updating Frozen: " . $conn->error . "</div>";
+                            }
+                        }
                     }
+                    
                 }
             ?>
+            <?php 
+                $customers = [];
+                while ($obj = $info_results->fetch_object()) {
+                    $customerId = $obj->customer_id;
+
+                    if (!isset($customers[$customerId])) {
+                        $customers[$customerId] = [
+                            'customer_id' => $customerId,
+                            'suspension' => $obj->suspension,
+                            'name' => "{$obj->first_name} {$obj->middle_name} {$obj->last_name}",
+                            'email' => $obj->email_address,
+                            'wallets' => [],
+                        ];
+                    }
+                            
+                    $customers[$customerId]['wallets'][] = [
+                        'wallet_id' => $obj->wallets_id,
+                        'currency_id' => $obj->currency_id,
+                        'balance' => $obj->amount,
+                        'frozen' => $obj->frozen,
+                    ];
+                }
+            ?>
+            
+            <?php foreach ($customers as $customer): ?>
+                <form action='customers.php' method='POST'>
+                    <div class='card'>
+                        <div class='card-header'>
+                            <h5>Customer ID: <?php echo $customer['customer_id']; ?></h5>
+                            <p>Is Suspended: <b><?php echo $customer['suspension']; ?></b></p>
+                            <input type='checkbox' name='suspend[]' value='<?php echo $customer['customer_id']; ?>' id='suspend_<?php echo $customer['customer_id']; ?>' class='check-input'>
+                            <label for='suspend_<?php echo $customer['customer_id']; ?>'>Toggle Suspension</label>
+                        </div>
+
+                        <div class='card-body'>
+                            <p>Name: <?php echo $customer['name']; ?></p>
+                            <p>Email Address: <?php echo $customer['email']; ?></p>
+                            <a class='btn btn-dark btn-sm' data-bs-toggle='collapse' href='#hiddenWallets_<?php echo $customer['customer_id']; ?>' role='button' aria-expanded='false'>Wallets</a>
+
+                            <div class='collapse' id='hiddenWallets_<?php echo $customer['customer_id']; ?>'>
+                                <?php foreach ($customer['wallets'] as $wallet): ?>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <p>Currency: <?php echo $wallet['currency_id']; ?></p>
+                                        </div>
+                                        <div class="card-body">
+                                            <p>Balance: <?php echo $wallet['balance']; ?></p>
+                                            <p>Is Frozen: <b><?php echo $wallet['frozen'] ?></b></p>
+                                            <input type='checkbox' name='freeze[]' value='<?php echo $wallet['wallet_id']; ?>' id='freeze_<?php echo $wallet['wallet_id']; ?>' class='check-input'>
+                                            <label for='suspend_<?php echo $wallet['wallet_id']; ?>'>Toggle Suspension</label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class='card-footer'>
+                            <input type='number' Placeholder='Confirm Customer ID' name='customerid' class='form-control'>
+                            <div class='form-group'>
+                                <input type='submit' name='submit' value='Update' class='btn btn-primary btn-sm'>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            <?php endforeach; ?>      
+                    
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

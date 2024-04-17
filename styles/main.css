@@ -26,22 +26,30 @@ header {
 }
 .header-navbar-list {
     padding: 0;
-    display: flex;
+    margin: 0 auto;
+    overflow: hidden;
 }
 .header-navbar-list-item {
-    padding: 12px;
-    transition: 0.3s;
+    display: inline;
+    padding: 10px;
+    float: left; /* Might remove */
 }
+.header-navbar-list-item-right {
+    float: right;
+    padding: 10px;
+}
+
 .item-active {
     background-color: rgb(255, 115, 64);
 }
-.header-navbar-list-item a {
+.header-navbar-list-item a, .header-navbar-list-item-right a {
     text-decoration: none;
     color: black;
 }
-.header-navbar-list-item:hover {
+.header-navbar-list-item:hover, .header-navbar-list-item-right:hover {
     background-color: #00b168;
 }
+
 
 /* Containers */
 .container {

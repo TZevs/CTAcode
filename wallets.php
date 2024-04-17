@@ -26,25 +26,53 @@
         <title>Account</title>
     </head>
     <body>
-        <header>
-            <div class="header-logo">
-                <h1 class="header-logo-text">C.T.A</h1>
-                <p class="header-logo-text">Currency Transfer Application</p>
-            </div>
-            <nav class="header-navbar">
-                <ul class="header-navbar-list">
-                    <li class="header-navbar-list-item"><a href="index.php">Home</a></li>
-                    <li class="header-navbar-list-item item-active"><a href="wallets.php">Wallets</a></li>
-                    <li class="header-navbar-list-item"><a href="transaction.php">Transactions</a></li>
-                    <li class="header-navbar-list-item"><a href="exchange.php">Exchange Rates</a></li>
-                    <li class="header-navbar-list-item"><a href="account.php"><i class="fa-solid fa-user"></i></a></li>
-                </ul>
-            </nav>
-        </header>
+        <?php include("includes/customerNav.php") ?>
 
         <div class="container">
             <h3>Your Wallets</h3>
+            <?php
+                if (isset($_POST["submit"])) {
+                    $newWallet = $_POST['selectCurrency'];
+
+                    mysqli_data_seek($info_results, 0);
+                    $id = $info_results->fetch_object();
+
+                    $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ($id->customer_id, '$newWallet', 0)";
+                    if ($conn->query($addWallet) === TRUE) {
+                        echo "<div class='alert alert-success'>Wallet Added. <a href='wallets.php'>Refresh</a></div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Error adding wallet: " . $conn->error . "</div>";
+                    }
+                }
+
+                if (isset($_POST["submitDelete"])) {
+                    $toDelete = $_POST['delWallet'];
+
+                    $errors = array();
+
+                    mysqli_data_seek($info_results, 0);
+                    $wallets = $info_results->fetch_object();
+
+                    if ($wallets->amount <= 0) {
+                        array_push($errors, "The wallet must be empty to delete it.");
+                    }
+
+                    if (count($errors)>0) {
+                        foreach($errors as $error) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                    } else {
+                        $deleteWallet = "DELETE FROM currencywallet WHERE wallets_id = '$toDelete'";
+                        if ($conn->query($deleteWallet) === TRUE) {
+                            echo "<div class='alert alert-success'>Delete Update Successful. <a href='wallets.php'>Refresh</a>.</div>";
+                        } else {
+                            echo "<div class='alert alert-danger'>Error Updating DB: " . $conn->error . "</div>";
+                        }
+                    }
+                }
+            ?>
             <?php 
+                mysqli_data_seek($info_results, 0);
                 while ($obj = $info_results->fetch_object()) {
                     echo "<div class='card wb-75 mb-3'>";
                     echo "<div class='card-body'>";
@@ -62,24 +90,9 @@
                 echo "</div>";
                 }
             ?>
-            <h5>Add Wallet</h5>
+
                 <div class="add-wallet">
-                    <?php
-                        if (isset($_POST["submit"])) {
-                            $newWallet = $_POST['selectCurrency'];
-
-                            $userID = "SELECT customer_id FROM customeraccounts";
-                            $result = mysqli_query($conn, $userID);
-                            $id = $result->fetch_object();
-
-                            $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ($id->customer_id, '$newWallet', 0)";
-                            if ($conn->query($addWallet) === TRUE) {
-                                echo "<div class='alert alert-success'>Wallet Added. <a href='wallets.php'>Refresh</a></div>";
-                            } else {
-                                echo "<div class='alert alert-danger'>Error adding wallet: " . $conn->error . "</div>";
-                            }
-                        }
-                    ?>
+                    <h5>Add Wallet</h5>
                     <form action="wallets.php" method="POST">
                         <div class="form-group">
                             <select name="selectCurrency" id="selectCurrency" class="form-select">
@@ -95,7 +108,27 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="+" name="submit" class="btn btn-warning">
+                            <input type="submit" value="Add Wallet" name="submit" class="btn btn-warning">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="delete-wallet">
+                    <h5>Delete Wallets</h5>
+                    <form action="wallets.php" method="POST">
+                        <div class="form-group">
+                            <select name="delWallet" id="delWallet" class="form-select">
+                                <option selected>Wallet to Delete</option>
+                                <?php
+                                    mysqli_data_seek($info_results, 0);
+                                    while ($obj = $info_results->fetch_object()) {
+                                        echo "<option value='{$obj->wallets_id}'>{$obj->currency_id}</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Delete Wallet" name="submitDelete" class="btn btn-danger">
                         </div>
                     </form>
                 </div>
