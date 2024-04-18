@@ -11,6 +11,8 @@
 
     $customerInfo = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
     $customer_result = mysqli_query($conn, $customerInfo);
+    $customer = mysqli_fetch_assoc($customer_result);
+    // If statement for the num of rows = 0, query the admin account table. 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,27 +44,56 @@
         <div class="container">
             <h2>Account Details</h2>
             <?php
-            $customer = mysqli_fetch_assoc($customer_result);
             echo "<div class='account-details'>";
             echo "<p> Name: " . $customer['first_name'] . ' ' . $customer['middle_name'] . ' ' . $customer['last_name'] . "</p>";
             echo "<p> Date of Birth: " . $customer['dob'] . "</p>";
             echo "<p> Email Address: " . $customer['email_address'] . "</p>";
             echo "</div>";
             ?>
+            <?php
+                if (isset($_POST["submit"])) {
+                    $oldPassword = $_POST['currentpassword'];
+                    $newPassword = $_POST['input_password'];
+                    $id = $customer['customer_id'];
 
-            <form action="" method="POST">
+                    $errors = array();
+
+                    if ($oldPassword != $customer['password']) {
+                        array_push($errors, "Incorrect current password.");
+                    }
+                    if (empty($newPassword) OR empty($oldPassword)) {
+                        array_push($errors, "Enter both old and new passwords.");
+                    }
+                    if(strlen($newPassword)<8) {
+                        array_push($errors, "Password must be at least 8 characters long.");
+                    }
+                    if ($oldPassword == $newPassword) {
+                        array_push($errors, "Old and New passwords should not match.");
+                    }
+
+                    $updatePassword = "UPDATE customeraccounts SET password = '$newPassword' WHERE customer_id = '$id'";
+
+                    if (count($errors)>0) {
+                        foreach ($errors as $error) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                    } else if ($conn->query($updatePassword) === TRUE) {
+                        echo "<div class='alert alert-success'>Your password has been updated. <a href='account.php'>Refresh</a></div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Error updating password: " . $conn->error . "</div>";
+                    }
+                }
+            ?>
+            <form action="account.php" method="POST">
                 <div class="form-group">
-                    <label for="email">Change Email Address:</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="example@example.com">
+                    <label for="currentpassword">To Change Password:</label>
+                    <input type="password" class="form-control" id="currentpassword" name="currentpassword" placeholder="Current Password">
                 </div>
                 <div class="form-group"> 
-                    <label for="input_password">Change Password:</label>
-                    <input type="password" class="form-control" id="input_password" name="input_password" placeholder="********">
+                    <input type="password" class="form-control" id="input_password" name="input_password" placeholder="New Password">
                 </div>
-                <div class="row g-3">
-                    <div class="col form-btn">
-                        <input type="submit" value="Update" name="update" class="btn btn-warning">
-                    </div>
+                <div class="form-group">
+                    <input type="submit" value="Update" name="submit" class="btn btn-warning">
                 </div>
             </form>
             <div>
