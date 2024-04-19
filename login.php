@@ -26,46 +26,74 @@
         <div class="container">
             <h2 class="text-center">Login</h2>
             <?php 
-                session_start();
-
                 require_once("includes/db_conn.php");
 
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    $userEmail = trim($_POST['email']);
-                    $password_input = $_POST['input_password'];
+                if ($_SERVER["REQUEST_METHOD"] == "POST") { 
+                    session_start();
 
-                    $customer = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail' AND password = '$password_input'";
-                    $customer_result = mysqli_query($conn, $customer);
+                    require_once("includes/db_conn.php");
 
-                    $admin = "SELECT * FROM adminaccount WHERE email_address = '$userEmail' AND admin_password = '$password_input'";
-                    $admin_result = mysqli_query($conn, $admin);
-                    
-                    $errors = array();
+                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                        $userEmail = trim($_POST['email']);
+                        $password_input = $_POST['input_password'];
 
-                    if (empty($userEmail) OR empty($password_input)) {
-                        array_push($errors, "Enter your email and password. <a href='login.php'>Please try again.</a>");
-                    }
-                    $userOne = mysqli_fetch_assoc($customer_result);                    
-                    if ($userOne['suspension'] != "False") {
-                        array_push($errors, "Sorry, this account has been suspended.");
-                    } 
-
-                    if (count($errors) >0) {
-                        foreach ($errors as $error) {
-                            echo "<div class='alert alert-danger'>$error</div>";
+                        if (empty($userEmail) OR empty($password_input)) {
+                            echo "<div class='alert alert-danger'>Enter your email and password.</div>";
                         }
-                    } else if (mysqli_num_rows($customer_result) == 1) {
-                        $_SESSION['userEmail'] = $userEmail;
-                        header("Location: wallets.php");
-                    } else if (mysqli_num_rows($admin_result) == 1) {
-                        $_SESSION['userEmail'] = $userEmail;
-                        header("Location: customers.php");
+
+                        // Using prepared statements to prevent SQL injection
+                        $customer_query = "SELECT email_address, password, suspension FROM customeraccounts WHERE email_address = ? LIMIT 1";
+                        $customer_stmt = mysqli_prepare($conn, $customer_query);
+                        mysqli_stmt_bind_param($customer_stmt, "s", $userEmail);
+                        mysqli_stmt_execute($customer_stmt);
+                        mysqli_stmt_store_result($customer_stmt);
+
+                        if (mysqli_stmt_num_rows($customer_stmt) == 1) {
+                            mysqli_stmt_bind_result($customer_stmt, $db_email, $db_Hashed_Password, $is_suspended);
+                            mysqli_stmt_fetch($customer_stmt);
+                            
+                        // Verifying password
+                        if (password_verify($password_input, $db_Hashed_Password)) {
+                            if ($is_suspended == 'True') {
+                                echo "<div class='alert alert-danger'>Your account is suspended.</div>";
+                            } else {
+                            // Regenerate session ID to prevent session fixation
+                                session_regenerate_id(true);
+                                $_SESSION['userEmail'] = $userEmail;
+                                mysqli_stmt_close($customer_stmt);
+                                mysqli_close($conn);
+                                header("Location: wallets.php");
+                                exit();
+                            }
+                        } else {
+                            echo "<div class='alert alert-danger'>Incorrect password.</div>";
+                        }
                     } else {
-                        echo "<div class='alert alert-danger'>Sorry, this login does not match an account. <a href='login.php'>Please try again.</a></div>";
+                        // Check admin account
+                        $admin_query = "SELECT email_address FROM adminaccount WHERE email_address = ? AND admin_password = ? LIMIT 1";
+                        $admin_stmt = mysqli_prepare($conn, $admin_query);
+                        mysqli_stmt_bind_param($admin_stmt, "ss", $userEmail, $password_input);
+                        mysqli_stmt_execute($admin_stmt);
+                        mysqli_stmt_store_result($admin_stmt);
+
+                        if (mysqli_stmt_num_rows($admin_stmt) == 1) {
+                            session_regenerate_id(true);
+                            $_SESSION['userEmail'] = $userEmail;
+                            mysqli_stmt_close($admin_stmt);
+                            mysqli_close($conn);
+                            header("Location: customers.php");
+                            exit();
+                        } else {
+                            echo "<div class='alert alert-danger'>Invalid email or password. <a href='login.php'>Please try again.</a></div>";
+                            }
+                        }
+                    } else {
+                        header("Location: login.php");
+                        exit();
                     }
-                    mysqli_close($conn);
                 }
             ?>
+
             <form action="login.php" method="POST">
                 <div class="form-group">
                     <input type="email" id="email" placeholder="Enter Email" name="email" class="form-control">

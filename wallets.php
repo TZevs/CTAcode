@@ -9,7 +9,7 @@
 
     require_once("includes/db_conn.php");
 
-    $info = "SELECT * FROM customeraccounts
+    $info = "SELECT customeraccounts.customer_id, currencywallet.wallets_id, currencywallet.currency_id, currencywallet.amount FROM customeraccounts
                 INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
                 WHERE customeraccounts.email_address = '$userEmail'";
     $info_results = $conn->query($info);
@@ -34,10 +34,10 @@
                 if (isset($_POST["submit"])) {
                     $newWallet = $_POST['selectCurrency'];
 
-                    mysqli_data_seek($info_results, 0);
-                    $id = $info_results->fetch_object();
+                    $info_id = $info_results->fetch_assoc();
+                    $id = $info_id["customer_id"];
 
-                    $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ($id->customer_id, '$newWallet', 0)";
+                    $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ('$id', '$newWallet', 0)";
                     if ($conn->query($addWallet) === TRUE) {
                         echo "<div class='alert alert-success'>Wallet Added. <a href='wallets.php'>Refresh</a></div>";
                     } else {

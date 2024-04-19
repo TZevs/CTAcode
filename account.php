@@ -12,7 +12,6 @@
     $customerInfo = "SELECT * FROM customeraccounts WHERE email_address = '$userEmail'";
     $customer_result = mysqli_query($conn, $customerInfo);
     $customer = mysqli_fetch_assoc($customer_result);
-    // If statement for the num of rows = 0, query the admin account table. 
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -50,14 +50,16 @@
                     }
                     if ($password!==$confirmPassword) {
                         array_push($errors, "Passwords do not match.");
-                    }                    
+                    }                 
+                    
+                    $hashed_Password = password_hash($password, PASSWORD_DEFAULT);
 
                     if (count($errors)>0) {
                         foreach ($errors as $error) {
                             echo "<div class='alert alert-danger'>$error</div>";
                         }
                     } else {
-                        $addRecord = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$password','$dob')";
+                        $addRecord = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$hashed_Password','$dob')";
                         if ($conn->query($addRecord) === TRUE) {
                             echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
                         } else {
