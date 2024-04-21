@@ -37,7 +37,7 @@
                         $before = $_POST['amount'];
                         $from = $_POST['from'];
                         $to = $_POST['to'];
-                        $after = $_POST['converted'];
+                        $after = $_POST['converted']; // Check this has not been changed.
                         $checkId = $id['customer_id'];
 
                         $errors = array();
@@ -82,6 +82,7 @@
                     }
                 ?>
                 <form action="transaction.php" method="POST">
+                    <h3>Wallet to Wallet</h3>
                     <div class="form-group">
                         <input type="number" id="amount" name="amount" class="form-control" min="0" step="0.01" Placeholder="Enter an Amount to Exchange:">
                     </div>
@@ -108,7 +109,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="number" name="converted" id="converted" class="form-control" Placeholder="Converted Amount:" readonly>
+                        <input type="number" name="converted" id="converted" class="form-control" Placeholder="Converted Amount:" readonly> 
                     </div>
                     <div class="form-group">
                         <input type="submit" name="submit" value="Transfer" class="btn btn-primary btn-inline">
@@ -118,6 +119,24 @@
                     <button onclick="convertCurrency()" class="btn btn-warning btn-inline">Convert</button>
                 </div>
             </div>  
+            <div>
+                <form action="" method="POST">
+                    <h3>Bank to Wallet</h3>
+                    <p>As this is a UK based application you must use a UK bank account.</p>
+                    <div class="form-group">
+                        <label for="amountFB">Amount:</label>
+                        <input type="number" name="amountFB" id="amountFB" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for=""></label>
+                        <input type="text" name="" id="" class="form-control"> 
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" name="submitFromBank" class="btn btn-warning" value="Transfer">
+                    </div>
+                </form>
+            </div>
+
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

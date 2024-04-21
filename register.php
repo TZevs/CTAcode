@@ -61,6 +61,7 @@
                     } else {
                         $addRecord = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$hashed_Password','$dob')";
                         if ($conn->query($addRecord) === TRUE) {
+                            // Add a GBP wallet for the customer here.
                             echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
                         } else {
                             echo "<div class='alert alert-danger'>Error adding account: " . $conn->error . "</div>";
