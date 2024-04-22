@@ -9,7 +9,8 @@
 
     require_once("includes/db_conn.php");
 
-    $info = "SELECT customeraccounts.customer_id, currencywallet.wallets_id, currencywallet.currency_id, currencywallet.amount FROM customeraccounts
+    $info = "SELECT customeraccounts.customer_id, currencywallet.wallets_id, currencywallet.currency_id, currencywallet.amount, currencywallet.frozen 
+                FROM customeraccounts
                 INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
                 WHERE customeraccounts.email_address = '$userEmail'";
     $info_results = $conn->query($info);
@@ -53,7 +54,7 @@
                     mysqli_data_seek($info_results, 0);
                     $wallets = $info_results->fetch_object();
 
-                    if ($wallets->amount <= 0) {
+                    if ($wallets->amount > 0) {
                         array_push($errors, "The wallet must be empty to delete it.");
                     }
 

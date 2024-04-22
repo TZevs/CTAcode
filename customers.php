@@ -1,13 +1,21 @@
 <?php
     session_start();
-
-    if(!isset($_SESSION['userEmail'])) {
-         header("Location: login.php");
-         exit();
-    }
-    $userEmail = $_SESSION['userEmail'];
- 
     require_once("includes/db_conn.php");
+    
+    if(!isset($_SESSION['userEmail'])) {
+        
+        header("Location: login.php");
+        exit();
+
+        $userEmail = $_SESSION['userEmail'];
+        $checkAdmin = "SELECT email_address FROM adminaccount WHERE email_address = '$userEmail'";
+        $adminResult = $conn->query($checkAdmin);
+
+        if (mysqli_num_rows($adminResult) == 0) {
+            header("Location: login.php");
+            exit();
+        }
+    } 
     $customerInfo = "SELECT DISTINCT customeraccounts.customer_id, first_name, middle_name, last_name, email_address, suspension, currencywallet.currency_id, currencywallet.amount, currencywallet.frozen, currencywallet.wallets_id 
                     FROM customeraccounts
                     INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id";  
@@ -24,19 +32,8 @@
         <title>Customers</title>
     </head>
     <body>
-        <header>
-            <div class="header-logo">
-                <h1 class="header-logo-text">C.T.A</h1>
-                <p class="header-logo-text">Currency Transfer Application</p>
-            </div>
-            <nav class="header-navbar">
-                <ul class="header-navbar-list">
-                    <li class="header-navbar-list-item item-active"><a href="customers.php">Customer Management</a></li>
-                    <li class="header-navbar-list-item"><a href="exchange.php">Exchange Rates</a></li>
-                    <li class="header-navbar-list-item"><a href="account.php"><i class="fa-solid fa-user"></i></a></li>
-                </ul>
-            </nav>
-        </header>
+        <?php include("includes/staffNav.php") ?>
+
         <div class="container">
             <h2 class="text-center">Customers</h2>
             <?php
@@ -129,9 +126,10 @@
                                             <p>Balance: <?php echo $wallet['balance']; ?></p>
                                             <p>Is Frozen: <b><?php echo $wallet['frozen'] ?></b></p>
                                             <input type='checkbox' name='freeze[]' value='<?php echo $wallet['wallet_id']; ?>' id='freeze_<?php echo $wallet['wallet_id']; ?>' class='check-input'>
-                                            <label for='suspend_<?php echo $wallet['wallet_id']; ?>'>Toggle Suspension</label>
+                                            <label for='freeze_<?php echo $wallet['wallet_id']; ?>'>Toggle Freeze</label>
                                         </div>
                                     </div>
+                                    <br>
                                 <?php endforeach; ?>
                             </div>
                         </div>
@@ -143,6 +141,7 @@
                         </div>
                     </div>
                 </form>
+                <br>
             <?php endforeach; ?>      
                     
         </div>

@@ -61,7 +61,8 @@
                     } else {
                         $addRecord = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$hashed_Password','$dob')";
                         if ($conn->query($addRecord) === TRUE) {
-                            // Add a GBP wallet for the customer here.
+                            // $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ('', 'GBP', 0)";
+                            // Find the customer_id of the most recent customer and add 1. 
                             echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
                         } else {
                             echo "<div class='alert alert-danger'>Error adding account: " . $conn->error . "</div>";

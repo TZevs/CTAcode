@@ -1,16 +1,17 @@
 <?php
     session_start();
-
+    
     if(!isset($_SESSION['userEmail'])) {
         header("Location: login.php");
         exit();
     }
+    
     $userEmail = $_SESSION['userEmail'];
     
     require_once("includes/db_conn.php");
-    $userId = "SELECT customer_id FROM customeraccounts WHERE email_address = '$userEmail'";
-    $id_result = mysqli_query($conn, $userId);
-    $id = mysqli_fetch_assoc($id_result);
+    $user = "SELECT customer_id FROM customeraccounts WHERE customeraccounts.email_address = '$userEmail'";
+    $userResult = mysqli_query($conn, $user);
+    $id = mysqli_fetch_assoc($userResult);
 
     $currencyOptions = "SELECT * FROM currency";
     $option_results = $conn->query($currencyOptions);
@@ -31,13 +32,13 @@
 
         <div class="container center">
             <div>
-                <h2>Exchange</h2>
                 <?php
                     if (isset($_POST["submit"])) {
                         $before = $_POST['amount'];
                         $from = $_POST['from'];
                         $to = $_POST['to'];
                         $after = $_POST['converted']; // Check this has not been changed.
+
                         $checkId = $id['customer_id'];
 
                         $errors = array();
@@ -51,16 +52,15 @@
                         $tRow = mysqli_fetch_assoc($to_results);
 
                         if(empty($before) OR empty($after)) {
-                            array_push($errors, "Make sure you have entered an amount and converted it.");
+                            array_push($errors, "Make sure you have entered an amount and converted it. <a href='customers.php'>Refresh.</a>");
                         }
                         if ($before < 1) {
-                            array_push($errors, "Amount must be more than 1.");
+                            array_push($errors, "Amount must be more than 1. <a href='customers.php'>Refresh.</a>");
                         }
                         if (mysqli_num_rows($from_results) != 1 OR mysqli_num_rows($to_results) != 1) {
-                            array_push($errors, "You do not have the wallets for this transaction.");
-                        }
-                        if ($fRow['amount'] < $before) {
-                            array_push($errors, "You do not have enough money in the ${from} wallet.");
+                            array_push($errors, "You do not have the wallets for this transaction. <a href='customers.php'>Refresh.</a>");
+                        } elseif ($fRow['amount'] < $before) {
+                            array_push($errors, "You do not have enough money in the ${from} wallet. <a href='customers.php'>Refresh.</a>");
                         }
 
                         if (count($errors)>0) {
@@ -74,7 +74,7 @@
                             $updateTo = "UPDATE currencywallet SET amount = '$toAmount' WHERE customer_id = '$checkId' AND currency_id = '$to'";
                             
                             if ($conn->query($updateFrom) === TRUE AND $conn->query($updateTo) === TRUE) {
-                                echo "<div class='alert alert-success'>Transaction Successful. <a href='customers.php'>Refresh.</a> <a href='wallets.php'>Go to Wallets.</a></div>";
+                                echo "<div class='alert alert-success'>Transaction Successful. <a href='transaction.php'>Refresh.</a> <a href='wallets.php'>Go to Wallets.</a></div>";
                             } else {
                                 echo "<div class='alert alert-danger'>Error updating wallets: " . $conn->error . "</div>";
                             }
@@ -112,31 +112,167 @@
                         <input type="number" name="converted" id="converted" class="form-control" Placeholder="Converted Amount:" readonly> 
                     </div>
                     <div class="form-group">
-                        <input type="submit" name="submit" value="Transfer" class="btn btn-primary btn-inline">
+                        <input type="submit" name="submit" value="Transfer" class="btn btn-warning">
                     </div>
                 </form>
                 <div class="form-group">
-                    <button onclick="convertCurrency()" class="btn btn-warning btn-inline">Convert</button>
+                    <button onclick="convertCurrency()" class="btn btn-primary">Convert</button>
                 </div>
             </div>  
             <div>
-                <form action="" method="POST">
+                <?php
+                    if (isset($_POST["submitFromBank"])) {
+                        $amount = $_POST['amountFB'];
+                        $cardNum = $_POST['cardNum'];
+                        $holderName = $_POST['cardHolder'];
+                        $expiryDate = $_POST['exDate'];
+                        $securityCode = $_POST['secCode']; 
+                        
+                        $transferDate = date("Y/m/d");
+                        $checkId = $id['customer_id'];
+
+                        $mainWallet = "SELECT customer_id, amount, frozen FROM currencywallet WHERE customer_id = '$checkId' AND currency_id = 'GBP'"; 
+                        $mainResult = $conn->query($mainWallet);
+                        $GBP = mysqli_fetch_assoc($mainResult);
+                        $isFrozen = $GBP['frozen'];
+                        $currentAmount = $GBP['amount'];
+                        $checkId = $GBP['customer_id'];
+
+                        $errors = array();
+
+                        if(empty($amount) OR empty($cardNum) OR empty($holderName) OR empty($expiryDate) OR empty($securityCode)) {
+                            array_push($errors, "Ensure All fields have a value.");
+                        } 
+                        if ($amount < 5) {
+                            array_push($errors, "Amount must be more than £5.");
+                        }
+                        if ($isFrozen == "True") {
+                            array_push($errors, "This wallet is Frozen.");
+                        }
+
+                        if (count($errors)>0) {
+                            foreach ($errors as $error) {
+                                echo "<div class='alert alert-danger'>$error</div>";
+                            }
+                        } else {
+                            $newBalance = $currentAmount + $amount;
+                            $addTransaction = "INSERT INTO transactions (customer_id, recipient_name, acc_number, sort_code, expiry_date, amount_sent, transfer_date) VALUES ('$checkId', '$holderName', '$cardNum', '$securityCode', '$expiryDate', '$amount', '$transferDate')";
+                            $updateWallet = "UPDATE currencywallet SET amount = '$newBalance' WHERE customer_id = '$checkId' AND currency_id = 'GBP'";
+                            if ($conn->query($addTransaction) === TRUE && $conn->query($updateWallet)) {
+                                echo "<div class='alert alert-success'>Transaction Successful. <a href='transaction.php'>Refresh.</a> <a href='wallets.php'>Go to Wallets.</a></div>";
+                            } else {
+                                echo "<div class='alert alert-danger'>Error updating wallets or adding transaction: " . $conn->error . "</div>";
+                            }
+                        }
+                    }
+                ?>
+                <form action="transaction.php" method="POST">
                     <h3>Bank to Wallet</h3>
                     <p>As this is a UK based application you must use a UK bank account.</p>
                     <div class="form-group">
                         <label for="amountFB">Amount:</label>
-                        <input type="number" name="amountFB" id="amountFB" class="form-control">
+                        <input type="number" name="amountFB" id="amountFB" class="form-control" min="5" step="5" Placeholder="Minimum £5" required>
                     </div>
                     <div class="form-group">
-                        <label for=""></label>
-                        <input type="text" name="" id="" class="form-control"> 
+                        <label for="cardNum">Card Details:</label>
+                        <input type="text" name="cardNum" id="cardNum" class="form-control" Placeholder="Card Number" required> 
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="cardHolder" id="cardHolder" class="form-control" Placeholder="Cardholder Name" required> 
+                    </div>
+                    <div class="row g-3">
+                        <div class="col">
+                            <input type="text" name="exDate" id="exDate" class="form-control" Placeholder="Expiry Date" required> 
+                        </div>
+                        <div class="col">
+                            <input type="number" name="secCode" id="secCode" class="form-control" Placeholder="Security Code" required> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address1">Billing Address:</label>
+                        <input type="text" name="address1" id="address1" class="form-control" Placeholder="Address Line 1" required> 
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="address2" id="address2" class="form-control" Placeholder="Address Line 2"> 
+                    </div>
+                    <div class="row g-3">
+                        <div class="col">
+                            <input type="text" name="city" id="city" class="form-control" Placeholder="City" required> 
+                        </div>
+                        <div class="col">
+                            <input type="text" name="pCode" id="pCode" class="form-control" Placeholder="Postcode" required> 
+                        </div>
                     </div>
                     <div class="form-group">
                         <input type="submit" name="submitFromBank" class="btn btn-warning" value="Transfer">
                     </div>
                 </form>
             </div>
+            <div>
+                <?php   
+                    if (isset($_POST["submitToBank"])) {
+                        # code...
+                    }
+                ?>
+                <form action="transaction.php" method="POST">
+                    <h3>Wallet to Bank</h3>
+                    <div class="form-group">
+                        <label for="amountTB">Amount:</label>
+                        <input type="number" name="amountTB" id="amountTB" class="form-control" min="5" step="5">
+                    </div>
+                    <div class="form-group">
+                        <select name="fromWallet" id="fromWallet" class="form-control">
+                            <option selected>Select Wallet</option>
+                            <?php 
+                                $userWallets = "SELECT * FROM currencywallet WHERE customer_id = '$id'";
+                                $walletResults = mysqli_query($conn, $userWallets);
 
+                                while ($wallets = mysqli_fetch_assoc($walletResults)) {
+                                    echo "<option value='" . $wallets["wallets_id"] . "'>" . $wallets["currency_id"] . "</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="accName">Account Details:</label>
+                        <input type="text" name="accName" id="accName" class="form-control" Placeholder="Recipeient Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="bankCode" id="bankCode" class="form-control" Placeholder="Bank Code (BIC)">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="accNum" id="accNum" class="form-control" Placeholder="IBAN / Account Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="accName">Recipient Address:</label>
+                        <input type="text" name="address1" id="address1" class="form-control" Placeholder="Address Line 1"> 
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="address2" id="address2" class="form-control" Placeholder="Address Line 2"> 
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="country" id="country" class="form-control" Placeholder="Country"> 
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="state" id="state" class="form-control" Placeholder="State / County"> 
+                    </div>
+                    <div class="row g-3">
+                        <div class="col">
+                            <input type="text" name="city" id="city" class="form-control" Placeholder="City"> 
+                        </div>
+                        <div class="col">
+                            <input type="text" name="pCode" id="pCode" class="form-control" Placeholder="Postcode"> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference">Reference:</label>
+                        <input type="text" name="reference" id="reference" class="form-control"> 
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" name="submitToBank" class="btn btn-warning" value="Transfer">
+                    </div>
+                </form>
+            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
