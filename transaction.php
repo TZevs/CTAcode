@@ -9,7 +9,7 @@
     $userEmail = $_SESSION['userEmail'];
     
     require_once("includes/db_conn.php");
-    $user = "SELECT customer_id FROM customeraccounts WHERE customeraccounts.email_address = '$userEmail'";
+    $user = "SELECT customer_id FROM customeraccounts WHERE email_address = '$userEmail'";
     $userResult = mysqli_query($conn, $user);
     $id = mysqli_fetch_assoc($userResult);
 
@@ -119,6 +119,7 @@
                     <button onclick="convertCurrency()" class="btn btn-primary">Convert</button>
                 </div>
             </div>  
+
             <div>
                 <?php
                     if (isset($_POST["submitFromBank"])) {
@@ -156,7 +157,7 @@
                             }
                         } else {
                             $newBalance = $currentAmount + $amount;
-                            $addTransaction = "INSERT INTO transactions (customer_id, recipient_name, acc_number, sort_code, expiry_date, amount_sent, transfer_date) VALUES ('$checkId', '$holderName', '$cardNum', '$securityCode', '$expiryDate', '$amount', '$transferDate')";
+                            $addTransaction = "INSERT INTO transactions (customer_id, name_on_card, acc_number, sort_code, expiry_date, amount_sent, transfer_date) VALUES ('$checkId', '$holderName', '$cardNum', '$securityCode', '$expiryDate', '$amount', '$transferDate')";
                             $updateWallet = "UPDATE currencywallet SET amount = '$newBalance' WHERE customer_id = '$checkId' AND currency_id = 'GBP'";
                             if ($conn->query($addTransaction) === TRUE && $conn->query($updateWallet)) {
                                 echo "<div class='alert alert-success'>Transaction Successful. <a href='transaction.php'>Refresh.</a> <a href='wallets.php'>Go to Wallets.</a></div>";
@@ -208,40 +209,90 @@
                     </div>
                 </form>
             </div>
+
             <div>
                 <?php   
                     if (isset($_POST["submitToBank"])) {
-                        # code...
+                        $amount = $_POST['amountTB'];
+                        $fWallet = $_POST['fromWallet'];
+                        $accountName = $_POST['accName'];
+                        $BIC = $_POST['bankCode'];
+                        $accIbanNum = $_POST['accNum'];
+
+                        $checkId = $id['customer_id'];
+
+                        $fromWallet = "SELECT customer_id, amount, frozen FROM currencywallet WHERE customer_id = '$checkId' AND currency_id = '$fWallet'"; 
+                        $fromResult = $conn->query($fromWallet);
+                        $from = mysqli_fetch_assoc($fromResult);
+                        $isFrozen = $from['frozen'];
+                        $currentAmount = $from['amount'];
+
+                        $newBalance = $currentAmount - $amount;
+                        $transferDate = date("Y/m/d");
+
+                        $errors = array();
+
+                        if(empty($amount) OR empty($fWallet) OR empty($accountName) OR empty($BIC) OR empty($accIbanNum)) {
+                            array_push($errors, "Ensure all fields have a value.");
+                        } 
+                        if (mysqli_num_rows($fromResult) < 0) {
+                            array_push($errors, "You do not have this wallet.");
+                        }
+                        if ($newBalance < 0) {
+                            array_push($errors, "Not enough money in your wallet.");
+                        }
+                        if ($isFrozen == 'True') {
+                            array_push($errors, "This wallet is frozen.");
+                        }
+                        if ($amount < 5) {
+                            array_push($errors, "Amount must be more than 5.");
+                        }
+
+                        if (count($errors)>0) {
+                            foreach ($errors as $error) {
+                                echo "<div class='alert alert-danger'>$error</div>";
+                            }
+                        } else {
+                            $updateWallet = "UPDATE currencywallet SET amount = '$newBalance' WHERE customer_id = '$checkId' AND currency_id = '$fWallet'";
+                            $addTransaction = "INSERT INTO transactions (customer_id, recipient_name, iban_number, bic_code, from_wallet, amount_sent, transfer_date) VALUES ('$checkId', '$accountName', '$accIbanNum', '$BIC', '$fWallet', '$amount', '$transferDate')";
+                            if ($conn->query($updateWallet) === TRUE AND $conn->query($addTransaction) === TRUE) {
+                                echo "<div class='alert alert-success'>Transaction Successful. <a href='transaction.php'>Refresh.</a> <a href='wallets.php'>Go to Wallets.</a></div>";
+                            } else {
+                                echo "<div class='alert alert-danger'>Error updating wallets or adding transaction: " . $conn->error . "</div>";
+                            }
+                        }
+
                     }
                 ?>
                 <form action="transaction.php" method="POST">
                     <h3>Wallet to Bank</h3>
                     <div class="form-group">
                         <label for="amountTB">Amount:</label>
-                        <input type="number" name="amountTB" id="amountTB" class="form-control" min="5" step="5">
+                        <input type="number" name="amountTB" id="amountTB" class="form-control" min="5" step="5" required>
                     </div>
                     <div class="form-group">
-                        <select name="fromWallet" id="fromWallet" class="form-control">
+                        <select name="fromWallet" id="fromWallet" class="form-control" required>
                             <option selected>Select Wallet</option>
                             <?php 
-                                $userWallets = "SELECT * FROM currencywallet WHERE customer_id = '$id'";
+                                $checkId = $id['customer_id'];
+                                $userWallets = "SELECT wallets_id, currency_id FROM currencywallet WHERE customer_id = '$checkId'";
                                 $walletResults = mysqli_query($conn, $userWallets);
 
-                                while ($wallets = mysqli_fetch_assoc($walletResults)) {
-                                    echo "<option value='" . $wallets["wallets_id"] . "'>" . $wallets["currency_id"] . "</option>";
+                                while ($wallets = $walletResults->fetch_object()) {
+                                    echo "<option value='{$wallets->currency_id}'>{$wallets->currency_id}</option>";
                                 }
                             ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="accName">Account Details:</label>
-                        <input type="text" name="accName" id="accName" class="form-control" Placeholder="Recipeient Name">
+                        <input type="text" name="accName" id="accName" class="form-control" Placeholder="Recipeient Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="bankCode" id="bankCode" class="form-control" Placeholder="Bank Code (BIC)">
+                        <input type="text" name="bankCode" id="bankCode" class="form-control" Placeholder="Bank Code (BIC)" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="accNum" id="accNum" class="form-control" Placeholder="IBAN / Account Number">
+                        <input type="text" name="accNum" id="accNum" class="form-control" Placeholder="IBAN / Account Number" required>
                     </div>
                     <div class="form-group">
                         <label for="accName">Recipient Address:</label>
