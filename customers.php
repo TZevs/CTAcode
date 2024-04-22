@@ -3,7 +3,6 @@
     require_once("includes/db_conn.php");
     
     if(!isset($_SESSION['userEmail'])) {
-        
         header("Location: login.php");
         exit();
 
@@ -16,7 +15,13 @@
             exit();
         }
     } 
-    $customerInfo = "SELECT DISTINCT customeraccounts.customer_id, first_name, middle_name, last_name, email_address, suspension, currencywallet.currency_id, currencywallet.amount, currencywallet.frozen, currencywallet.wallets_id 
+
+    $userEmail = $_SESSION['userEmail'];
+    $checkAdminId = "SELECT type_id FROM adminaccount WHERE email_address = '$userEmail'";
+    $id_result = $conn->query($checkAdminId);
+    $type = mysqli_fetch_assoc($id_result)['type_id'];
+
+    $customerInfo = "SELECT DISTINCT customeraccounts.customer_id, first_name, middle_name, last_name, email_address, suspension, currencywallet.currency_id, currencywallet.amount, currencywallet.frozen, currencywallet.wallets_id, currencywallet.amountLimit 
                     FROM customeraccounts
                     INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id";  
     $info_results = $conn->query($customerInfo);
@@ -40,22 +45,23 @@
                 if (isset($_POST["submit"])) {
                     $id = $_POST['customerid'];
                 
-                    $errors = array();
-
                     if (isset($_POST["suspend"])) {
 
                         $databaseStatus = "SELECT suspension FROM customeraccounts WHERE customer_id = '$id'";
                         $status_result = mysqli_query($conn, $databaseStatus);
                         $currentStatus = mysqli_fetch_assoc($status_result)['suspension'];
                         $newStatus = $currentStatus == 'True' ? 'False' : 'True';
-                    
-                        $updateSuspend = "UPDATE customeraccounts SET suspension='$newStatus' WHERE customer_id = '$id'"; 
 
-                        if ($conn->query($updateSuspend) === TRUE) {
-                            echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
+                        if ($type == 2) {
+                            $updateSuspend = "UPDATE customeraccounts SET suspension='$newStatus' WHERE customer_id = '$id'"; 
+                            if ($conn->query($updateSuspend) === TRUE) {
+                                echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
+                            } else {
+                                echo "<div class='alert alert-danger'>Error updating suspension: " . $conn->error . "</div>";
+                            }
                         } else {
-                            echo "<div class='alert alert-danger'>Error updating suspension: " . $conn->error . "</div>";
-                        }
+                            echo "<div class='alert alert-danger'>Only a System Admin can suspend a customer account.</div>";
+                        } 
                     }
                     if (isset($_POST["freeze"])) {
                         foreach ($_POST["freeze"] as $walletId) {
@@ -65,16 +71,18 @@
                             $currentStatus = mysqli_fetch_assoc($status_result)['frozen'];
                             $newStatus = $currentStatus == 'True' ? 'False' : 'True';
                         
-                            $updateFreeze = "UPDATE currencywallet SET frozen='$newStatus' WHERE wallets_id = '$walletId'"; 
-
-                            if ($conn->query($updateFreeze) === TRUE) {
-                                echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
+                            if ($type == 3) {
+                                $updateFreeze = "UPDATE currencywallet SET frozen = '$newStatus' WHERE wallets_id = '$walletId'"; 
+                                if ($conn->query($updateFreeze) === TRUE) {
+                                    echo "<div class='alert alert-success'>Update Successful. <a href='customers.php'>Refresh.</a></div>";
+                                } else {
+                                    echo "<div class='alert alert-danger'>Error Updating Frozen: " . $conn->error . "</div>";
+                                }
                             } else {
-                                echo "<div class='alert alert-danger'>Error Updating Frozen: " . $conn->error . "</div>";
-                            }
+                                echo "<div class='alert alert-danger'>Only a Financial Admin can freeze a customer wallet.</div>";
+                            } 
                         }
                     }
-                    
                 }
             ?>
             <?php 
@@ -97,6 +105,7 @@
                         'currency_id' => $obj->currency_id,
                         'balance' => $obj->amount,
                         'frozen' => $obj->frozen,
+                        'limit' => $obj->amountLimit,
                     ];
                 }
             ?>
@@ -124,7 +133,8 @@
                                         </div>
                                         <div class="card-body">
                                             <p>Balance: <?php echo $wallet['balance']; ?></p>
-                                            <p>Is Frozen: <b><?php echo $wallet['frozen'] ?></b></p>
+                                            <p>Is Frozen: <b><?php echo $wallet['frozen']; ?></b></p>
+                                            <p>Wallet Limit: <?php echo $wallet['limit']; ?></p>
                                             <input type='checkbox' name='freeze[]' value='<?php echo $wallet['wallet_id']; ?>' id='freeze_<?php echo $wallet['wallet_id']; ?>' class='check-input'>
                                             <label for='freeze_<?php echo $wallet['wallet_id']; ?>'>Toggle Freeze</label>
                                         </div>

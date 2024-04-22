@@ -70,7 +70,7 @@
                         }
                     } else {
                         // Check admin account
-                        $admin_query = "SELECT email_address FROM adminaccount WHERE email_address = ? AND admin_password = ? LIMIT 1";
+                        $admin_query = "SELECT type_id, email_address FROM adminaccount WHERE email_address = ? AND admin_password = ? LIMIT 1";
                         $admin_stmt = mysqli_prepare($conn, $admin_query);
                         mysqli_stmt_bind_param($admin_stmt, "ss", $userEmail, $password_input);
                         mysqli_stmt_execute($admin_stmt);

@@ -28,7 +28,7 @@
         <?php include("includes/customerNav.php") ?>
 
         <div class="container">
-            <h2>Currency Exchange Rates</h2>
+            <h2 class="text-center">Currency Exchange Rates</h2>
             <table class="table table-striped">
                 <thead class="table-dark">
                     <th>Shorthand</th>

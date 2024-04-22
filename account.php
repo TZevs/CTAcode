@@ -27,7 +27,7 @@
         <?php include("includes/customerNav.php") ?>
 
         <div class="container">
-            <h2>Account Details</h2>
+            <h2 class="text-center">Account Details</h2>
             <?php
             echo "<div class='account-details'>";
             echo "<p> Name: " . $customer['first_name'] . ' ' . $customer['middle_name'] . ' ' . $customer['last_name'] . "</p>";

@@ -27,7 +27,7 @@
         <?php include("includes/staffNav.php"); ?>
 
         <div class="container">
-            <h2>Account Details</h2>
+            <h2 class="text-center">Account Details</h2>
             <?php
             echo "<div class='account-details'>";
             echo "<p> Name: " . $admin['first_name'] . ' ' . $admin['middle_name'] . ' ' . $admin['last_name'] . "</p>";

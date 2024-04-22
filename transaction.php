@@ -82,7 +82,7 @@
                     }
                 ?>
                 <form action="transaction.php" method="POST">
-                    <h3>Wallet to Wallet</h3>
+                    <h3 class="text-center">Wallet to Wallet</h3>
                     <div class="form-group">
                         <input type="number" id="amount" name="amount" class="form-control" min="0" step="0.01" Placeholder="Enter an Amount to Exchange:">
                     </div>
@@ -168,7 +168,7 @@
                     }
                 ?>
                 <form action="transaction.php" method="POST">
-                    <h3>Bank to Wallet</h3>
+                    <h3 class="text-center">Bank to Wallet</h3>
                     <p>As this is a UK based application you must use a UK bank account.</p>
                     <div class="form-group">
                         <label for="amountFB">Amount:</label>
@@ -265,7 +265,7 @@
                     }
                 ?>
                 <form action="transaction.php" method="POST">
-                    <h3>Wallet to Bank</h3>
+                    <h3 class="text-center">Wallet to Bank</h3>
                     <div class="form-group">
                         <label for="amountTB">Amount:</label>
                         <input type="number" name="amountTB" id="amountTB" class="form-control" min="5" step="5" required>

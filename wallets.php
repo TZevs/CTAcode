@@ -30,7 +30,7 @@
         <?php include("includes/customerNav.php") ?>
 
         <div class="container">
-            <h3>Your Wallets</h3>
+            <h3 class="text-center">Your Wallets</h3>
             <?php
                 if (isset($_POST["submit"])) {
                     $newWallet = $_POST['selectCurrency'];
