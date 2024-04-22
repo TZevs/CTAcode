@@ -21,9 +21,10 @@
     $id_result = $conn->query($checkAdminId);
     $type = mysqli_fetch_assoc($id_result)['type_id'];
 
-    $customerInfo = "SELECT DISTINCT customeraccounts.customer_id, first_name, middle_name, last_name, email_address, suspension, currencywallet.currency_id, currencywallet.amount, currencywallet.frozen, currencywallet.wallets_id, currencywallet.amountLimit 
+    $customerInfo = "SELECT DISTINCT *
                     FROM customeraccounts
-                    INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id";  
+                    INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
+                    INNER JOIN transactions ON transactions.customer_id = transactions.customer_id";  
     $info_results = $conn->query($customerInfo);
 ?>
 <!DOCTYPE html>
@@ -106,6 +107,12 @@
                         'balance' => $obj->amount,
                         'frozen' => $obj->frozen,
                         'limit' => $obj->amountLimit,
+                    ];
+
+                    $customers[$customerId]['transactions'][] = [
+                        'transaction_id' => $obj->transactions_id,
+                        'recipientName' => $obj->recipient_name,
+                        'walletID' => $obj->wallets_id,
                     ];
                 }
             ?>

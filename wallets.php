@@ -57,6 +57,9 @@
                     if ($wallets->amount > 0) {
                         array_push($errors, "The wallet must be empty to delete it.");
                     }
+                    if ($toDelete == 'GBP') {
+                        array_push($errors, "You can not delete your GBP wallet.");
+                    }
 
                     if (count($errors)>0) {
                         foreach($errors as $error) {
@@ -82,11 +85,6 @@
                         echo "<a class='btn btn-info' data-bs-toggle='collapse' href='#hiddenTransactions' role='button' aria-expanded='false'>
                                 Transactions
                             </a>";
-                        echo "<div class='collapse' id='hiddenTransactions'>
-                                <div class='card card-body'>
-                                    <h6>Transactions for this wallet</h6>
-                                </div>
-                            </div>";
                     echo "</div>";
                 echo "</div>";
                 }

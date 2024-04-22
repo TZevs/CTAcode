@@ -9,7 +9,9 @@
 
     require_once("includes/db_conn.php");
 
-    $adminInfo = "SELECT * FROM adminaccount WHERE email_address = '$userEmail'";
+    $adminInfo = "SELECT * FROM adminaccount 
+                    INNER JOIN usertypes ON usertypes.type_id = adminaccount.type_id
+                    WHERE email_address = '$userEmail'";
     $admin_result = mysqli_query($conn, $adminInfo);
     $admin = mysqli_fetch_assoc($admin_result);
 ?>
@@ -33,6 +35,7 @@
             echo "<p> Name: " . $admin['first_name'] . ' ' . $admin['middle_name'] . ' ' . $admin['last_name'] . "</p>";
             echo "<p> Date of Birth: " . $admin['dob'] . "</p>";
             echo "<p> Email Address: " . $admin['email_address'] . "</p>";
+            echo "<p> Job Title: " . $admin['type_name'] . "</p>";
             echo "<p> Start Date: " . $admin['start_date'] . "</p>";
             echo "</div>";
             ?>
