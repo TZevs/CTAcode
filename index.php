@@ -17,16 +17,14 @@
             <nav class="header-navbar">
                 <ul class="header-navbar-list">
                     <li class="header-navbar-list-item item-active"><a href="index.php">Home</a></li>
-                    <li class="header-navbar-list-item"><a href="wallets.php">Wallets</a></li>
-                    <li class="header-navbar-list-item"><a href="transaction.php">Transactions</a></li>
-                    <li class="header-navbar-list-item"><a href="exchange.php">Exchange Rates</a></li>
-                    <li class="header-navbar-list-item"><a href="register.php">Register</a></li>
                     <li class="header-navbar-list-item"><a href="login.php">Login</a></li>
-                    <li class="header-navbar-list-item"><a href="customers.php">Customer Management</a></li>
-                    <li class="header-navbar-list-item"><a href="account.php"><i class="fa-solid fa-user"></i></a></li>
+                    <li class="header-navbar-list-item"><a href="register.php">Register</a></li>
                 </ul>
             </nav>
         </header>
+
+        <div class="container">
+            <h2 class="text-center">About Us</h2>
         </div>
     </body>
 </html>

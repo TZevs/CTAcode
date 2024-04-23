@@ -112,7 +112,16 @@
                     $customers[$customerId]['transactions'][] = [
                         'transaction_id' => $obj->transactions_id,
                         'recipientName' => $obj->recipient_name,
+                        'nameOnCard' => $obj->name_on_card,
                         'walletID' => $obj->wallets_id,
+                        'accountNum' => $obj->acc_number,
+                        'sortCode' => $obj->sort_code,
+                        'expiryDate' => $obj->name_on_card,
+                        'iban' => $obj->iban_number,
+                        'bic' => $obj->bic_code,
+                        'amount' => $obj->amount_sent,
+                        'transferDate' => $obj->transfer_date,
+                        'flagged' => $obj->flagged,                        
                     ];
                 }
             ?>
