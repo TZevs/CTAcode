@@ -61,9 +61,16 @@
                     } else {
                         $addRecord = "INSERT INTO customeraccounts (first_name, middle_name, last_name, email_address, password, dob) VALUES ('$firstName','$middleName','$lastName','$email','$hashed_Password','$dob')";
                         if ($conn->query($addRecord) === TRUE) {
-                            // $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ('', 'GBP', 0)";
-                            // Find the customer_id of the most recent customer and add 1. 
-                            echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
+
+                            // Adding a GBP wallet.
+                            $lastId = "SELECT customer_id FROM customeraccounts ORDER BY customer_id DESC LIMIT 1";
+                            $last_result = $conn->query($lastId);
+                            $id = mysqli_fetch_assoc($last_result)['customer_id'];
+                            $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ('$id', 'GBP', 0)";
+
+                            if ($conn->query($addWallet) === TRUE) {
+                                echo "<div class='alert alert-success'>Successfully Registered. <a href='login.php'>Login.</a></div>";
+                            }
                         } else {
                             echo "<div class='alert alert-danger'>Error adding account: " . $conn->error . "</div>";
                         }
