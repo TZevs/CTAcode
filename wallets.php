@@ -115,7 +115,7 @@
                 mysqli_data_seek($info_results, 0);
                 while ($obj = $info_results->fetch_object()) {
                     if ($obj->frozen == 'False') {
-                        echo "<div class='card wb-75 mb-3'>";
+                        echo "<div class='card'>"; // wb-75 mb-3
                             echo "<div class='card-body'>";
 
                             echo "<h5 class='card-title'>Currency: {$obj->currency_id}</h5>";
@@ -124,7 +124,7 @@
                             echo "</div>";
                         echo "</div>";
                     } else {
-                        echo "<div class='card text-bg-info wb-75 mb-3'>";
+                        echo "<div class='card'>"; // text-bg-info wb-75 mb-3
                             echo "<div class='card-body'>";
 
                             echo "<h5 class='card-title'>Currency: {$obj->currency_id}</h5>";

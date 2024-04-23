@@ -17,8 +17,8 @@
             <nav class="header-navbar">
                 <ul class="header-navbar-list">
                     <li class="header-navbar-list-item"><a href="index.php">Home</a></li>
-                    <li class="header-navbar-list-item"><a href="register.php">Register</a></li>
                     <li class="header-navbar-list-item item-active"><a href="login.php">Login</a></li>
+                    <li class="header-navbar-list-item"><a href="register.php">Register</a></li>
                 </ul>
             </nav>
         </header>

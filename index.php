@@ -25,6 +25,8 @@
 
         <div class="container">
             <h2 class="text-center">About Us</h2>
+            <p>Join us, with 40+ currencies to choose from. Enjoy times abroad with easy access to funds from your phone.</p>
+            <p>We are a UK based application, transfer funds from your bank account to the GBP wallet to convert and move it to other currencies.</p>
         </div>
     </body>
 </html>

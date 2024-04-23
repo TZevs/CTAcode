@@ -7,6 +7,7 @@
         <ul class="header-navbar-list">
             <li class="header-navbar-list-item"><a href="index.php">Home</a></li>
             <li class="header-navbar-list-item"><a href="customers.php">Customer Management</a></li>
+            <li class="header-navbar-list-item"><a href="legal.php">Legal</a></li>
 
             <li class="header-navbar-list-item-right"><a href="StaffAccount.php"><i class="fa-solid fa-user"></i></a></li>
             <li class="header-navbar-list-item-right"><a href="includes/logout.php">Logout</a></li>

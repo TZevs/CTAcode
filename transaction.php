@@ -37,7 +37,7 @@
                         $before = $_POST['amount'];
                         $from = $_POST['from'];
                         $to = $_POST['to'];
-                        $after = $_POST['converted']; // Check this has not been changed.
+                        $after = $_POST['converted']; 
 
                         $checkId = $id['customer_id'];
 

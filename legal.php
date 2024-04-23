@@ -21,11 +21,12 @@
     $id_result = $conn->query($checkAdminId);
     $type = mysqli_fetch_assoc($id_result)['type_id'];
 
-    $customerInfo = "SELECT DISTINCT *
+    $walletInfo = "SELECT DISTINCT *
                     FROM customeraccounts
                     INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
-                    INNER JOIN transactions ON transactions.customer_id = transactions.customer_id";  
-    $info_results = $conn->query($customerInfo);
+                    INNER JOIN transactions ON transactions.customer_id = transactions.customer_id
+                    WHERE currencywallet.frozen = 'True'";  
+    $info_results = $conn->query($walletInfo);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,8 +43,35 @@
 
         <div class="container">
             <h2 class="text-center">Legal</h2>
-            
-             
+            <?php  
+                while ($obj = $walletInfo->fetch_object()) {
+                    if ($obj->frozen == 'True') {
+                        echo "<div class='card'>";
+
+                            echo "<div class='card-header'>";
+                                echo "<h4>{$obj->first_name} {$obj->last_name}</h4>";
+                                echo "<p>{$obj->email_address}</p>";
+                                echo "<p>Is Suspended: <b>{$obj->suspension}</b></p>";
+                            echo "</div>";
+
+                            echo "<div class='card-body'>";
+    
+                                echo "<h5>Currency: {$obj->currency_id}</h5>";
+                                echo "<p class='card-text'>Balance: {$obj->amount}</p>";
+
+                                if (is_null($obj->proof)) {
+                                    echo "<p class='card-text'>No file has been uploaded as proof of recipt.</p>";
+                                } else {
+                                    $imagePath = $obj->proof;
+                                    echo "<img src='$imagePath' alt='Image of Proof'>";
+                                }
+    
+                            echo "</div>";
+                        echo "</div>";
+                    }
+                }
+                
+            ?>
                     
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

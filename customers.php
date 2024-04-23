@@ -160,10 +160,8 @@
                             </div>
                         </div>
                         <div class='card-footer'>
-                            <input type='number' Placeholder='Confirm Customer ID' name='customerid' class='form-control'>
-                            <div class='form-group'>
-                                <input type='submit' name='submit' value='Update' class='btn btn-primary btn-sm'>
-                            </div>
+                            <input type='hidden' name='customerid' id='customerid' value='<?php echo $customer['customer_id']; ?>'>
+                            <input type='submit' name='submit' value='Update' class='btn btn-primary btn-sm'>
                         </div>
                     </div>
                 </form>
