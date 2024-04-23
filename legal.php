@@ -19,12 +19,10 @@
     $userEmail = $_SESSION['userEmail'];
     $checkAdminId = "SELECT type_id FROM adminaccount WHERE email_address = '$userEmail'";
     $id_result = $conn->query($checkAdminId);
-    $type = mysqli_fetch_assoc($id_result)['type_id'];
 
     $walletInfo = "SELECT DISTINCT *
                     FROM customeraccounts
                     INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
-                    INNER JOIN transactions ON transactions.customer_id = transactions.customer_id
                     WHERE currencywallet.frozen = 'True'";  
     $info_results = $conn->query($walletInfo);
 ?>
@@ -44,31 +42,33 @@
         <div class="container">
             <h2 class="text-center">Legal</h2>
             <?php  
-                while ($obj = $walletInfo->fetch_object()) {
+                while ($obj = $info_results->fetch_object()) {
                     if ($obj->frozen == 'True') {
-                        echo "<div class='card'>";
+                        echo "<div class='card border-3 border-black'>";
 
-                            echo "<div class='card-header'>";
-                                echo "<h4>{$obj->first_name} {$obj->last_name}</h4>";
-                                echo "<p>{$obj->email_address}</p>";
+                            echo "<div class='card-header text-bg-info'>";
+                                echo "<h5>Customer: {$obj->first_name} {$obj->middle_name} {$obj->last_name}</h5>";
+                                echo "<p>Email Address: {$obj->email_address}</p>";
                                 echo "<p>Is Suspended: <b>{$obj->suspension}</b></p>";
                             echo "</div>";
 
                             echo "<div class='card-body'>";
     
                                 echo "<h5>Currency: {$obj->currency_id}</h5>";
-                                echo "<p class='card-text'>Balance: {$obj->amount}</p>";
+                                echo "<p>Balance: {$obj->amount}</p>";
 
                                 if (is_null($obj->proof)) {
-                                    echo "<p class='card-text'>No file has been uploaded as proof of recipt.</p>";
+                                    echo "<p>No file has been uploaded.</p>";
                                 } else {
                                     $imagePath = $obj->proof;
-                                    echo "<img src='$imagePath' alt='Image of Proof'>";
+                                    echo "<p>Recipt for transaction / Proof of Funds:</p>";
+                                    echo "<img src='$imagePath' alt='Image of Proof' class='img-fluid'>";
                                 }
     
                             echo "</div>";
                         echo "</div>";
                     }
+                    echo "<br>";
                 }
                 
             ?>

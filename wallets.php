@@ -78,15 +78,15 @@
                 if (isset($_POST["submitProof"])) {
                     $errors = array();
                     $target_dir = "userUploads/";
-                    $target_file = $target_dir . basename($_FILES["image"]["name"]);
+                    $target_file = $target_dir . basename($_FILES["recipt"]["name"]);
                     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
                     $walletID = $_POST['walletId'];
 
-                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    $check = getimagesize($_FILES["recipt"]["tmp_name"]);
                     if ($check == false) {
                         array_push($errors, "File is not an image.");
                     }
-                    if ($_FILES["image"]["size"] > 500000) {
+                    if ($_FILES["recipt"]["size"] > 500000) {
                         array_push($errors, "This file is too large");
                     }
                     if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
@@ -98,7 +98,7 @@
                             echo "<div class='alert alert-danger'>$error</div>";
                         }
                     } else {
-                        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                        if (move_uploaded_file($_FILES["recipt"]["tmp_name"], $target_file)) {
                             $image_path = $target_file;
                             $uploadRecipt = "UPDATE currencywallet SET proof = '$image_path' WHERE wallets_id = '$walletID'";
                             if ($conn->query($uploadRecipt) === TRUE) {
@@ -115,7 +115,7 @@
                 mysqli_data_seek($info_results, 0);
                 while ($obj = $info_results->fetch_object()) {
                     if ($obj->frozen == 'False') {
-                        echo "<div class='card'>"; // wb-75 mb-3
+                        echo "<div class='card wb-75 mb-3'>";
                             echo "<div class='card-body'>";
 
                             echo "<h5 class='card-title'>Currency: {$obj->currency_id}</h5>";
@@ -124,17 +124,17 @@
                             echo "</div>";
                         echo "</div>";
                     } else {
-                        echo "<div class='card'>"; // text-bg-info wb-75 mb-3
+                        echo "<div class='card text-bg-info wb-75 mb-3'>"; 
                             echo "<div class='card-body'>";
 
                             echo "<h5 class='card-title'>Currency: {$obj->currency_id}</h5>";
                             echo "<p class='card-text'>Balance: {$obj->amount}</p>";
 
-                            echo "<form action='wallets.php' method='POST'>";
+                            echo "<form action='wallets.php' method='POST' enctype='multipart/form-data'>";
                                 echo "<div class='form-group'>";
                                     echo "<input type='hidden' id='walletId' name='walletId' value='{$obj->wallets_id}'>";
                                     echo "<label for='recipt'>Upload Proof of funds: </label>";
-                                    echo "<input type='file' name='recipt' id='recipt' class='form-control' accept='image/png, image/jpeg' enctype='multipart/form-data' />";
+                                    echo "<input type='file' name='recipt' id='recipt' class='form-control' accept='image/png, image/jpeg' />";
                                 echo "</div>";
                                 echo "<div class='form-group'>";
                                     echo "<input type='submit' name='submitProof' value='Submit Recipt' class='btn btn-primary' >";
@@ -146,9 +146,10 @@
                     }
                 }
             ?>
-
+        </div>
+        <div class="container">
             <div class="add-wallet">
-                <h5>Add Wallet</h5>
+                <h4>Add Wallet</h4>
                 <form action="wallets.php" method="POST">
                     <div class="form-group">
                         <select name="selectCurrency" id="selectCurrency" class="form-select">
@@ -170,7 +171,7 @@
             </div>
 
             <div class="delete-wallet">
-                <h5>Delete Wallets</h5>
+                <h4>Delete Wallets</h4>
                 <form action="wallets.php" method="POST">
                     <div class="form-group">
                         <select name="delWallet" id="delWallet" class="form-select">
@@ -188,8 +189,8 @@
                     </div>
                 </form>
             </div>
+        
         </div>
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>

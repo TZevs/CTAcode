@@ -19,12 +19,16 @@
     $userEmail = $_SESSION['userEmail'];
     $checkAdminId = "SELECT type_id FROM adminaccount WHERE email_address = '$userEmail'";
     $id_result = $conn->query($checkAdminId);
-    $type = mysqli_fetch_assoc($id_result)['type_id'];
+    $types = mysqli_fetch_assoc($id_result);
+    $type = $types['type_id'];
+
+    $typeName = "SELECT type_name FROM usertypes WHERE type_id = '$type'";
+    $type_result = $conn->query($typeName);
+    $name = mysqli_fetch_assoc($type_result)['type_name'];
 
     $customerInfo = "SELECT DISTINCT *
                     FROM customeraccounts
-                    INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id
-                    INNER JOIN transactions ON transactions.customer_id = transactions.customer_id";  
+                    INNER JOIN currencywallet ON currencywallet.customer_id = customeraccounts.customer_id";  
     $info_results = $conn->query($customerInfo);
 ?>
 <!DOCTYPE html>
@@ -42,6 +46,7 @@
 
         <div class="container">
             <h2 class="text-center">Customers</h2>
+            <p class="text-center">Your Job Title: <b><?php echo $name ?></b></p>
             <?php
                 if (isset($_POST["submit"])) {
                     $id = $_POST['customerid'];
@@ -108,27 +113,12 @@
                         'frozen' => $obj->frozen,
                         'limit' => $obj->amountLimit,
                     ];
-
-                    $customers[$customerId]['transactions'][] = [
-                        'transaction_id' => $obj->transactions_id,
-                        'recipientName' => $obj->recipient_name,
-                        'nameOnCard' => $obj->name_on_card,
-                        'walletID' => $obj->wallets_id,
-                        'accountNum' => $obj->acc_number,
-                        'sortCode' => $obj->sort_code,
-                        'expiryDate' => $obj->name_on_card,
-                        'iban' => $obj->iban_number,
-                        'bic' => $obj->bic_code,
-                        'amount' => $obj->amount_sent,
-                        'transferDate' => $obj->transfer_date,
-                        'flagged' => $obj->flagged,                        
-                    ];
                 }
             ?>
             
             <?php foreach ($customers as $customer): ?>
                 <form action='customers.php' method='POST'>
-                    <div class='card'>
+                    <div class='card border-3 border-black'>
                         <div class='card-header'>
                             <h5>Customer ID: <?php echo $customer['customer_id']; ?></h5>
                             <p>Is Suspended: <b><?php echo $customer['suspension']; ?></b></p>
@@ -136,7 +126,7 @@
                             <label for='suspend_<?php echo $customer['customer_id']; ?>'>Toggle Suspension</label>
                         </div>
 
-                        <div class='card-body'>
+                        <div class='card-body text-bg-warning'>
                             <p>Name: <?php echo $customer['name']; ?></p>
                             <p>Email Address: <?php echo $customer['email']; ?></p>
                             <a class='btn btn-dark btn-sm' data-bs-toggle='collapse' href='#hiddenWallets_<?php echo $customer['customer_id']; ?>' role='button' aria-expanded='false'>Wallets</a>
@@ -144,7 +134,7 @@
                             <div class='collapse' id='hiddenWallets_<?php echo $customer['customer_id']; ?>'>
                                 <?php foreach ($customer['wallets'] as $wallet): ?>
                                     <div class="card">
-                                        <div class="card-header">
+                                        <div class="card-header text-bg-primary">
                                             <p>Currency: <?php echo $wallet['currency_id']; ?></p>
                                         </div>
                                         <div class="card-body">

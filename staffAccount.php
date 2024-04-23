@@ -31,12 +31,14 @@
         <div class="container">
             <h2 class="text-center">Account Details</h2>
             <?php
-            echo "<div class='account-details'>";
-            echo "<p> Name: " . $admin['first_name'] . ' ' . $admin['middle_name'] . ' ' . $admin['last_name'] . "</p>";
-            echo "<p> Date of Birth: " . $admin['dob'] . "</p>";
-            echo "<p> Email Address: " . $admin['email_address'] . "</p>";
-            echo "<p> Job Title: " . $admin['type_name'] . "</p>";
-            echo "<p> Start Date: " . $admin['start_date'] . "</p>";
+            echo "<div class='card text-bg-warning border-3 border-black'>";
+                echo "<div class='card-body'>";
+                    echo "<p> Name: " . $admin['first_name'] . ' ' . $admin['surname'] . "</p>";
+                    echo "<p> Date of Birth: " . $admin['date_of_birth'] . "</p>";
+                    echo "<p> Email Address: " . $admin['email_address'] . "</p>";
+                    echo "<p> Job Title: " . $admin['type_name'] . "</p>";
+                    echo "<p> Start Date: " . $admin['hiring_date'] . "</p>";
+                echo "</div>";
             echo "</div>";
             ?>
             <?php
@@ -82,12 +84,9 @@
                     <input type="password" class="form-control" id="input_password" name="input_password" placeholder="New Password">
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Update" name="submit" class="btn btn-warning">
+                    <input type="submit" value="Update" name="submit" class="btn btn-primary">
                 </div>
             </form>
-            <div>
-                <h4 class="btn btn-primary"><a href="includes/logout.php" class="links">Logout</a></h4>
-            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

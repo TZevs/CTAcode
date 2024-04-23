@@ -30,7 +30,7 @@
     <body>
         <?php include("includes/customerNav.php") ?>
 
-        <div class="container center">
+        <div class="container">
             <div>
                 <?php
                     if (isset($_POST["submit"])) {
@@ -119,7 +119,9 @@
                     <button onclick="convertCurrency()" class="btn btn-primary">Convert</button>
                 </div>
             </div>  
+        </div>
 
+        <div class="container">
             <div class="accordion" id="accordionExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header">

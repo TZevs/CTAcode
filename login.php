@@ -69,7 +69,7 @@
                             echo "<div class='alert alert-danger'>Incorrect password.</div>";
                         }
                     } else {
-                        // Check admin account
+                        // Check admin account for a match
                         $admin_query = "SELECT type_id, email_address FROM adminaccount WHERE email_address = ? AND admin_password = ? LIMIT 1";
                         $admin_stmt = mysqli_prepare($conn, $admin_query);
                         mysqli_stmt_bind_param($admin_stmt, "ss", $userEmail, $password_input);
@@ -102,7 +102,7 @@
                     <input type="password" id="password" placeholder="Passsword" name="input_password" class="form-control">
                 </div>
                 <div class="form-group">
-                    <input type="submit" id="submit" value="Login" name="login" class="btn btn-primary">
+                    <input type="submit" id="submit" value="Login" name="login" class="btn btn-primary text-center">
                 </div>
             </form>
         </div>
