@@ -74,6 +74,42 @@
                         }
                     }
                 }
+
+                if (isset($_POST["submitProof"])) {
+                    $errors = array();
+                    $target_dir = "userUploads/";
+                    $target_file = $target_dir . basename($_FILES["image"]["name"]);
+                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    $walletID = $_POST['walletId'];
+
+                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    if ($check == false) {
+                        array_push($errors, "File is not an image.");
+                    }
+                    if ($_FILES["image"]["size"] > 500000) {
+                        array_push($errors, "This file is too large");
+                    }
+                    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                        array_push($errors, "Only JPG, JPEG, and PNG files are allowed.");
+                    }
+
+                    if (count($errors)>0) {
+                        foreach($errors as $error) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                    } else {
+                        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                            $image_path = $target_file;
+                            $uploadRecipt = "UPDATE currencywallet SET proof = '$image_path' WHERE wallets_id = '$walletID'";
+                            if ($conn->query($uploadRecipt) === TRUE) {
+                                echo "<div class='alert alert-success'>Recipt Upload Successful.</div>";
+                            } else {
+                                echo "<div class='alert alert-danger'>Error Uploading Recipt: " . $conn->error . "</div>";
+                            }
+                        }
+                    }
+
+                }
             ?>
             <?php 
                 mysqli_data_seek($info_results, 0);
@@ -94,10 +130,14 @@
                             echo "<h5 class='card-title'>Currency: {$obj->currency_id}</h5>";
                             echo "<p class='card-text'>Balance: {$obj->amount}</p>";
 
-                            echo "<form action='' method='POST'>";
+                            echo "<form action='wallets.php' method='POST'>";
                                 echo "<div class='form-group'>";
+                                    echo "<input type='hidden' id='walletId' name='walletId' value='{$obj->wallets_id}'>";
                                     echo "<label for='recipt'>Upload Proof of funds: </label>";
                                     echo "<input type='file' name='recipt' id='recipt' class='form-control' accept='image/png, image/jpeg' enctype='multipart/form-data' />";
+                                echo "</div>";
+                                echo "<div class='form-group'>";
+                                    echo "<input type='submit' name='submitProof' value='Submit Recipt' class='btn btn-primary' >";
                                 echo "</div>";
                             echo "</form>";
 
