@@ -102,17 +102,21 @@
                     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
                     $walletID = $_POST['walletId'];
 
-                    $check = getimagesize($_FILES["recipt"]["tmp_name"]);
-                    if ($check == false) {
-                        array_push($errors, "File is not an image.");
+                    if (empty($_FILES["recipt"]["tmp_name"])) {
+                        array_push($errors, "Upload your file.");
+                    } else {
+                        $check = getimagesize($_FILES["recipt"]["tmp_name"]);
+                        if ($check == false) {
+                            array_push($errors, "File is not an image.");
+                        }
+                        if ($_FILES["recipt"]["size"] > 500000) {
+                            array_push($errors, "This file is too large");
+                        }
+                        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                            array_push($errors, "Only JPG, JPEG, and PNG files are allowed.");
+                        }
                     }
-                    if ($_FILES["recipt"]["size"] > 500000) {
-                        array_push($errors, "This file is too large");
-                    }
-                    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-                        array_push($errors, "Only JPG, JPEG, and PNG files are allowed.");
-                    }
-
+                    
                     if (count($errors)>0) {
                         foreach($errors as $error) {
                             echo "<div class='alert alert-danger'>$error</div>";
