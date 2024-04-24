@@ -62,9 +62,8 @@
 
                     mysqli_data_seek($info_results, 0);
                     $wallets = $info_results->fetch_object();
-                    //$customer = $wallets->customer_id;
 
-                    if ($wallets->amount > 0) {
+                    if ($wallets->amount != 0) {
                         array_push($errors, "The wallet must be empty to delete it.");
                     }
 
