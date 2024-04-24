@@ -38,11 +38,15 @@
                     $info_id = $info_results->fetch_assoc();
                     $id = $info_id["customer_id"];
 
-                    $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ('$id', '$newWallet', 0)";
+                    if (isset($newWallet)) {
+                        echo "<div class='alert alert-danger'>Select a currency.</div>";
+                    } else {
+                        $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ('$id', '$newWallet', 0)";
                     if ($conn->query($addWallet) === TRUE) {
                         echo "<div class='alert alert-success'>Wallet Added. <a href='wallets.php'>Refresh</a></div>";
                     } else {
                         echo "<div class='alert alert-danger'>Error adding wallet: " . $conn->error . "</div>";
+                    }
                     }
                 }
 
