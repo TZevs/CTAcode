@@ -52,15 +52,15 @@
                         $tRow = mysqli_fetch_assoc($to_results);
 
                         if(empty($before) OR empty($after)) {
-                            array_push($errors, "Make sure you have entered an amount and converted it. <a href='customers.php'>Refresh.</a>");
+                            array_push($errors, "Make sure you have entered an amount and converted it.");
                         }
                         if ($before < 1) {
-                            array_push($errors, "Amount must be more than 1. <a href='customers.php'>Refresh.</a>");
+                            array_push($errors, "Amount must be more than 1.");
                         }
                         if (mysqli_num_rows($from_results) != 1 OR mysqli_num_rows($to_results) != 1) {
-                            array_push($errors, "You do not have the wallets for this transaction. <a href='customers.php'>Refresh.</a>");
+                            array_push($errors, "You do not have the wallets for this transaction.");
                         } elseif ($fRow['amount'] < $before) {
-                            array_push($errors, "You do not have enough money in the ${from} wallet. <a href='customers.php'>Refresh.</a>");
+                            array_push($errors, "You do not have enough money in your wallet.");
                         }
 
                         if (count($errors)>0) {
@@ -170,7 +170,7 @@
                                         $addTransaction = "INSERT INTO transactions (customer_id, name_on_card, acc_number, sort_code, expiry_date, amount_sent, transfer_date) VALUES ('$checkId', '$holderName', '$cardNum', '$securityCode', '$expiryDate', '$amount', '$transferDate')";
                                         $updateWallet = "UPDATE currencywallet SET amount = '$newBalance' WHERE customer_id = '$checkId' AND currency_id = 'GBP'";
                                         if ($conn->query($addTransaction) === TRUE && $conn->query($updateWallet)) {
-                                            echo "<div class='alert alert-success'>Transaction Successful. <a href='transaction.php'>Refresh.</a> <a href='wallets.php'>Go to Wallets.</a></div>";
+                                            echo "<div class='alert alert-success'>Transaction Successful. <a href='wallets.php'>Go to Wallets.</a></div>";
                                         } else {
                                             echo "<div class='alert alert-danger'>Error updating wallets or adding transaction: " . $conn->error . "</div>";
                                         }
