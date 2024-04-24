@@ -38,7 +38,12 @@
                     $info_id = $info_results->fetch_assoc();
                     $id = $info_id["customer_id"];
 
-                    if (isset($newWallet)) {
+                    $checkWallets = "SELECT wallets_id FROM currencywallet WHERE customer_id = '$id' AND currency_id = '$newWallet'";
+                    $check_results = $conn->query($checkWallets);
+                    
+                    if (mysqli_num_rows($check_results) == 1) {
+                        echo "<div class='alert alert-danger'>You already have this currency wallet.</div>";
+                    } elseif (strlen($newWallet) > 3) {
                         echo "<div class='alert alert-danger'>Select a currency.</div>";
                     } else {
                         $addWallet = "INSERT INTO currencywallet (customer_id, currency_id, amount) VALUES ('$id', '$newWallet', 0)";
