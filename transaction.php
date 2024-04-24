@@ -181,36 +181,36 @@
                                 <p>As this is a UK based application you must use a UK bank account.</p>
                                 <div class="form-group">
                                     <label for="amountFB">Amount:</label>
-                                    <input type="number" name="amountFB" id="amountFB" class="form-control" min="5" step="5" Placeholder="Minimum £5" required>
+                                    <input type="number" name="amountFB" id="amountFB" class="form-control" min="5" step="5" Placeholder="Minimum £5">
                                 </div>
                                 <div class="form-group">
                                     <label for="cardNum">Card Details:</label>
-                                    <input type="text" name="cardNum" id="cardNum" class="form-control" Placeholder="Card Number" required> 
+                                    <input type="text" name="cardNum" id="cardNum" class="form-control" Placeholder="Card Number"> 
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="cardHolder" id="cardHolder" class="form-control" Placeholder="Cardholder Name" required> 
+                                    <input type="text" name="cardHolder" id="cardHolder" class="form-control" Placeholder="Cardholder Name"> 
                                 </div>
                                 <div class="row g-3">
                                     <div class="col">
-                                        <input type="text" name="exDate" id="exDate" class="form-control" Placeholder="Expiry Date" required> 
+                                        <input type="text" name="exDate" id="exDate" class="form-control" Placeholder="Expiry Date"> 
                                     </div>
                                     <div class="col">
-                                        <input type="number" name="secCode" id="secCode" class="form-control" Placeholder="Security Code" required> 
+                                        <input type="number" name="secCode" id="secCode" class="form-control" Placeholder="Security Code"> 
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="address1">Billing Address:</label>
-                                    <input type="text" name="address1" id="address1" class="form-control" Placeholder="Address Line 1" required> 
+                                    <input type="text" name="address1" id="address1" class="form-control" Placeholder="Address Line 1" > 
                                 </div>
                                 <div class="form-group">
                                     <input type="text" name="address2" id="address2" class="form-control" Placeholder="Address Line 2"> 
                                 </div>
                                 <div class="row g-3">
                                     <div class="col">
-                                        <input type="text" name="city" id="city" class="form-control" Placeholder="City" required> 
+                                        <input type="text" name="city" id="city" class="form-control" Placeholder="City" > 
                                     </div>
                                     <div class="col">
-                                        <input type="text" name="pCode" id="pCode" class="form-control" Placeholder="Postcode" required> 
+                                        <input type="text" name="pCode" id="pCode" class="form-control" Placeholder="Postcode" > 
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -284,7 +284,7 @@
                             <form action="transaction.php" method="POST">
                                 <div class="form-group">
                                     <label for="amountTB">Amount:</label>
-                                    <input type="number" name="amountTB" id="amountTB" class="form-control" min="5" step="5" required>
+                                    <input type="number" name="amountTB" id="amountTB" class="form-control" min="5" step="5">
                                 </div>
                                 <div class="form-group">
                                     <select name="fromWallet" id="fromWallet" class="form-control" required>
