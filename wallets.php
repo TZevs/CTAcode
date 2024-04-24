@@ -62,15 +62,15 @@
 
                     mysqli_data_seek($info_results, 0);
                     $wallets = $info_results->fetch_object();
+                    $id = $wallets->customer_id;
 
-                    if ($wallets->amount != 0) {
-                        array_push($errors, "The wallet must be empty to delete it.");
-                    }
-
-                    $checkMain = "SELECT currency_id, frozen FROM currencywallet WHERE wallets_id = '$toDelete'";
+                    $checkMain = "SELECT currency_id, amount, frozen FROM currencywallet WHERE customer_id = '$id' AND wallets_id = '$toDelete'";
                     $checkResults = $conn->query($checkMain);
                     $check = mysqli_fetch_assoc($checkResults);
 
+                    if ($check['amount'] > 0) {
+                        array_push($errors, "The wallet must be empty to delete it.");
+                    }
                     if ($check['currency_id'] == "GBP") {
                         array_push($errors, "You can not delete your GBP wallet.");
                     } 
