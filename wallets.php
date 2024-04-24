@@ -68,6 +68,9 @@
                     }
                     if ($toDelete == 'GBP') {
                         array_push($errors, "You can not delete your GBP wallet.");
+                    } 
+                    if (strlen($toDelete) > 3) {
+                        array_push($errors, "Select a wallet to delete.");
                     }
 
                     if (count($errors)>0) {
