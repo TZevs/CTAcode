@@ -66,11 +66,14 @@
                     if ($wallets->amount > 0) {
                         array_push($errors, "The wallet must be empty to delete it.");
                     }
-                    if ($toDelete == 'GBP') {
+                    if ($toDelete == "GBP") {
                         array_push($errors, "You can not delete your GBP wallet.");
                     } 
                     if (strlen($toDelete) > 3) {
                         array_push($errors, "Select a wallet to delete.");
+                    }
+                    if ($wallets->frozen == 'True') {
+                        array_push($errors, "You can not delete a frozen wallet.");
                     }
 
                     if (count($errors)>0) {
