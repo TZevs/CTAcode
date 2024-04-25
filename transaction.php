@@ -156,7 +156,7 @@
                                         array_push($errors, "Ensure All fields have a value.");
                                     } 
                                     if ($amount < 5 OR $amount > 1000000) {
-                                        array_push($errors, "Amount must be more than £5.");
+                                        array_push($errors, "Amount must be within the limit.");
                                     }
                                     if ($isFrozen == "True") {
                                         array_push($errors, "This wallet is Frozen.");
@@ -263,7 +263,7 @@
                                         array_push($errors, "This wallet is frozen.");
                                     }
                                     if ($amount < 5 OR $amount > 1000000) {
-                                        array_push($errors, "Amount must be more than 5.");
+                                        array_push($errors, "Amount must be within the limit.");
                                     }
 
                                     if (count($errors)>0) {
