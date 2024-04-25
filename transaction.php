@@ -155,7 +155,7 @@
                                     if(empty($amount) OR empty($cardNum) OR empty($holderName) OR empty($expiryDate) OR empty($securityCode)) {
                                         array_push($errors, "Ensure All fields have a value.");
                                     } 
-                                    if ($amount < 5) {
+                                    if ($amount < 5 OR $amount > 1000000) {
                                         array_push($errors, "Amount must be more than £5.");
                                     }
                                     if ($isFrozen == "True") {
