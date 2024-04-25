@@ -262,7 +262,7 @@
                                     if ($isFrozen == 'True') {
                                         array_push($errors, "This wallet is frozen.");
                                     }
-                                    if ($amount < 5) {
+                                    if ($amount < 5 OR $amount > 1000000) {
                                         array_push($errors, "Amount must be more than 5.");
                                     }
 
@@ -288,7 +288,7 @@
                                     <input type="number" name="amountTB" id="amountTB" class="form-control" min="5" step="5">
                                 </div>
                                 <div class="form-group">
-                                    <select name="fromWallet" id="fromWallet" class="form-control" required>
+                                    <select name="fromWallet" id="fromWallet" class="form-control">
                                         <option selected>Select Wallet</option>
                                         <?php 
                                             $checkId = $id['customer_id'];
@@ -303,13 +303,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="accName">Account Details:</label>
-                                    <input type="text" name="accName" id="accName" class="form-control" Placeholder="Recipeient Name" required>
+                                    <input type="text" name="accName" id="accName" class="form-control" Placeholder="Recipeient Name" >
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="bankCode" id="bankCode" class="form-control" Placeholder="Bank Code (BIC)" required>
+                                    <input type="text" name="bankCode" id="bankCode" class="form-control" Placeholder="Bank Code (BIC)" >
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="accNum" id="accNum" class="form-control" Placeholder="IBAN / Account Number" required>
+                                    <input type="text" name="accNum" id="accNum" class="form-control" Placeholder="IBAN / Account Number">
                                 </div>
                                 <div class="form-group">
                                     <label for="accName">Recipient Address:</label>
